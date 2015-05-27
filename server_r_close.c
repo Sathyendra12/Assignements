@@ -6,7 +6,7 @@
 
 int
 r_close (struct r_file *file) {
-        r_inode *temp_node;
+        r_inode *temp_node = NULL;
         /*Find whether the file open */
         for (temp_node = op_tab ; temp_node != NULL &&
         temp_node->inode_number != file->inode_number &&
@@ -27,6 +27,7 @@ r_close (struct r_file *file) {
                 else {
                         /*Close & return success */
                         close (file->fd);
+                        free (file);
                         return 0;
                 }
         }

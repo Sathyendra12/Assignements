@@ -8,3 +8,7 @@ r_inode *op_tab;
 
 /*Defining Export point */
 typedef struct r_dentry *dentry;
+
+/*Root Node of List of File */
+r_dentry *root_node;
+

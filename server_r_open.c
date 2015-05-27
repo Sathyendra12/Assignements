@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/types.h>
@@ -8,6 +8,13 @@
 int
 r_open (const char *filename , unsigned int mode , struct r_file *file) {
         struct stat file_info;
+        r_inode *ino = NULL;
+        r_inode *temp_node = NULL;
+        r_fd *new_fd = NULL;
+        char f_name[100];
+
+        strcpy (f_name , exp_point);
+        strcat (f_name , filename);
         int fd = open (filename , mode);
 
         if (fd != -1) {
@@ -19,8 +26,6 @@ r_open (const char *filename , unsigned int mode , struct r_file *file) {
                 } else {
                         /*Getting Inode number of the file */
                         unsigned long inode = file_info.st_ino;
-                        r_inode *ino;
-                        r_inode *temp_node;
                         /*Find the Inode number exist or not */
                         for (ino = op_tab; ino != NULL && ino->next != NULL &&
                         ino->inode_number != inode; ino = ino->next)
@@ -28,6 +33,8 @@ r_open (const char *filename , unsigned int mode , struct r_file *file) {
                         if (ino == NULL) {
                                 temp_node = (r_inode *)
                                         malloc (sizeof (r_inode));
+                                if (temp_node == NULL)
+                                        goto out;
                                 temp_node->inode_number = inode;
                                 temp_node->fd_list = NULL;
                                 temp_node->next = NULL;
@@ -38,6 +45,8 @@ r_open (const char *filename , unsigned int mode , struct r_file *file) {
                                 /*Inode entry not found. So add a new entry*/
                                 temp_node = (r_inode *)
                                         malloc (sizeof (r_inode));
+                                if (temp_node == NULL)
+                                        goto out;
                                 temp_node->inode_number = inode;
                                 temp_node->fd_list = NULL;
                                 temp_node->next = NULL;
@@ -47,8 +56,10 @@ r_open (const char *filename , unsigned int mode , struct r_file *file) {
                                 /*Inode entry already exist */
                                 temp_node = ino;
                         }
-                        r_fd *new_fd = (r_fd *)malloc (sizeof(r_fd));
+                        new_fd = (r_fd *)malloc (sizeof(r_fd));
 
+                        if (new_fd == NULL)
+                                goto out;
                         new_fd->fd = fd;
                         new_fd->next = NULL;
                         new_fd->prev = NULL;
@@ -64,11 +75,26 @@ r_open (const char *filename , unsigned int mode , struct r_file *file) {
                         }
                         /*Create a newly opened file model*/
                         file = (r_file *) malloc (sizeof (r_file));
+                        if (file == NULL)
+                                goto out;
                         file->inode_number = inode;
                         file->fd = fd;
                         return 0;
                 }
         }
+out:    if (temp_node != NULL)
+                free (temp_node);
+        if (new_fd != NULL)
+                free (new_fd);
+        if (file != NULL)
+                free (file);
         file = NULL;
         return 1;
 }
+/*
+int
+main () {
+        struct r_file *rf = NULL;
+        char *str = "abcd.txt";
+        int n = r_open (str , O_RDONLY , rf);
+}*/
