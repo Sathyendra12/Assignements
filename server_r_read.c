@@ -10,7 +10,7 @@ r_read (r_file *file , char *buffer , ssize_t size)
                 /*Read the contents of the specified file */
                 byts_read = read (fd, buffer, size-1);
                         if (byts_read != size)
-                                return 14;
+                                return not_enough_content;
         } else
                 return -1;
 }
