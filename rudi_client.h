@@ -1,8 +1,8 @@
 #include "rudi_common.h"
 
 /*Connection Parameters */
-char *server_name;
-unsigned int server_port;
+char server_name[100];
+unsigned int server_port = 0;
 
 /*To initialize the server connection */
 int
@@ -25,5 +25,5 @@ int
 rClose (struct r_file *file);
 
 /*Server Connection Identifier */
-int sockfd = 0;
+int sockfd = -1;
 
