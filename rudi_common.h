@@ -1,13 +1,16 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 /*Enumeration for Function Identification */
 enum fun_list {_r_list = 101 , _r_open = 102 , _r_read = 103 , _r_close = 104 };
 
 /*Enumeration for Error List */
 enum err_list {directory_empty = 11 , file_not_found = 12 ,
-file_not_open = 13 , not_enough_content = 14 };
+file_not_open = 13 , not_enough_content = 14 , not_a_file = 15};
 
 /*Export Point Directory content */
 struct r_dentry {

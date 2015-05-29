@@ -6,6 +6,7 @@
 
 int
 r_close (struct r_file *file) {
+        int err = 1;
         r_inode *temp_node = NULL;
         /*Find whether the file open */
         for (temp_node = op_tab ; temp_node != NULL &&
@@ -14,7 +15,8 @@ r_close (struct r_file *file) {
                 ;
         if (temp_node == NULL) {
                 /*File is not found */
-                return 1;
+                err = file_not_found;
+                return err;
         } else {
                 r_fd *temp_fd;
                 /*Finding the entry in open file list */
@@ -23,7 +25,8 @@ r_close (struct r_file *file) {
                         ;
                 if (temp_fd == NULL)
                         /*File is not open */
-                        return 1;
+                        err = file_not_open;
+                        return err;
                 else {
                         /*Close & return success */
                         close (file->fd);
@@ -32,3 +35,4 @@ r_close (struct r_file *file) {
                 }
         }
 }
+

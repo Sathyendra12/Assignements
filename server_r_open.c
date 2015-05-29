@@ -7,6 +7,7 @@
 /*Function to Open a file requested by the Client */
 int
 r_open (const char *filename , unsigned int mode , struct r_file *file) {
+        int err = 1;
         struct stat file_info;
         r_inode *ino = NULL;
         r_inode *temp_node = NULL;
@@ -22,6 +23,7 @@ r_open (const char *filename , unsigned int mode , struct r_file *file) {
                 fstat (fd, &file_info);
                 /*Check whether the file is normal file */
                 if (!S_ISREG (file_info.st_mode)) {
+                        err = not_a_file;
                         close (fd);
                 } else {
                         /*Getting Inode number of the file */
@@ -81,6 +83,8 @@ r_open (const char *filename , unsigned int mode , struct r_file *file) {
                         file->fd = fd;
                         return 0;
                 }
+        } else {
+                err = file_not_found;
         }
 out:    if (temp_node != NULL)
                 free (temp_node);
@@ -89,12 +93,6 @@ out:    if (temp_node != NULL)
         if (file != NULL)
                 free (file);
         file = NULL;
-        return 1;
+        return err;
 }
-/*
-int
-main () {
-        struct r_file *rf = NULL;
-        char *str = "abcd.txt";
-        int n = r_open (str , O_RDONLY , rf);
-}*/
+

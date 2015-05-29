@@ -1,7 +1,5 @@
 #include <arpa/inet.h>
-#include <string.h>
 #include <sys/types.h>
-#include <unistd.h>
 #include "rudi_client.h"
 
 int
@@ -27,9 +25,3 @@ init_rClient (char *host_name , unsigned int port) {
         return 0;
 }
 
-int main()
-{
-        int n=init_rClient("127.0.0.1",5000);
-        printf ("Err: %d\n",n);
-
-}
