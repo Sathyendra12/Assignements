@@ -3,15 +3,15 @@
 #include <sys/stat.h>
 
 int
-server_r_list(r_dentry *list)
+/*server_r_list(r_dentry *list)*/
+server_r_list()
 {
         DIR *dir;
         struct dirent *dp;
         struct stat path_stat;
-        char *file_name = NULL;
         r_dentry *new_entry , *node_ptr , *p;
 
-        list = NULL;
+        /*list = NULL;*/
         dir = opendir(exp_point);
         if (dir == NULL) {
                 goto out;
@@ -41,19 +41,20 @@ server_r_list(r_dentry *list)
                                         node_ptr->next = new_entry;
                                         node_ptr = new_entry;
                                 }
-                                /*free(new_entry);*/
                         }
                 }
+                new_entry = NULL;
+                free(new_entry);
                 /*closedir(dir);*/
         }
-        if (root_node != NULL)
-                list = root_node;
+        /*if (root_node != NULL)
+                list = root_node;*/
 out:
-        if (list != NULL) {
+        if (root_node != NULL) {
                 return 0;
         } else {
                 root_node = NULL;
-                list = NULL;
+                /*list = NULL;*/
                 return 1;
         }
 }

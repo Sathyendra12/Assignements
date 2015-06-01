@@ -1,13 +1,14 @@
-#include "rudi_client.h"
+#include "rudi_server.h"
 
 int
-list_handler() {
+list_handler(int conn) {
 
         char data[100] , sendBuff[1024] , temp_buff[1024];
-        int fun_status , p_size;
-        r_dentry list , *ptr;
+        int fun_status , p_size , index = 0;
+        r_dentry *ptr;
 
-        fun_status = server_r_list(&list);
+        if (root_node == NULL)
+                return 1;
 
         memset (sendBuff , 0 , sizeof(sendBuff));
         memset (data , 0 , sizeof(data));
@@ -16,18 +17,15 @@ list_handler() {
         sprintf (data , "%d" , fun_status);
         strcat (sendBuff , data);
 
+        memcpy (sendBuff + 1 , &ptr , sizeof(r_dentry));
+
         if (fun_status == 0) {
-                for (ptr = &list ; ptr != NULL ; ptr = ptr->next) {
-                        p_size = sizeof (ptr);
-                        memset (data , 0 , sizeof(data));
+                for (ptr = root_node->next , index = 1 ; ptr != NULL;
+                ptr = ptr->next , index++) {
 
-                        sprintf (data , "%d" , p_size);
+                        memcpy (sendBuff + 1 + sizeof(r_dentry) * index , &ptr ,
+                        sizeof(r_dentry));
 
-                        memset (temp_buff , 0 , sizeof(temp_buff));
-
-                        memcpy (temp_buff , &ptr , p_size);
-                        strcat (sendBuff , data);
-                        strcat (sendBuff , temp_buff);
                 }
                 memset (data , 0 , sizeof(data));
                 sprintf (data , "%d" , -1);

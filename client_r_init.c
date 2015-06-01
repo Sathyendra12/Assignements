@@ -21,7 +21,13 @@ init_rClient (char *host_name , unsigned int port) {
                 printf ("\nERROR: Could not establish Connection\n");
                 return 1;
         }
-        printf ("Connection Established to: %s" , host_name);
+        printf ("Connection Established to: %s\n" , host_name);
         return 0;
 }
+/*
+int main()
+{
+        int n=init_rClient("127.0.0.1",5000);
+        printf ("Err: %d\n",n);
 
+}*/

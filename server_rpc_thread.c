@@ -1,7 +1,7 @@
 #include "rudi_server.h"
 
-void*
-main_thread (void *parameter) {
+void
+*thread_fun (void *parameter) {
         char recvBuff[1024] , len[5] , data[500];
         int p_size , res , conn = 0 , st = 0;
 
@@ -18,18 +18,21 @@ main_thread (void *parameter) {
                 res = atoi (data);
                 /*Interprete received data based on type of call */
                 switch (res) {
-                case 101:
+                case _r_list:
+                        st = list_handler (conn);
                         break;
-                case 102:
+                case _r_open:
                         st = open_handler (conn , recvBuff);
                         break;
-                case 103:
+                case _r_read:
+                        st = read_handler (conn , recvBuff);
                         break;
-                case 104:
+                case _r_close:
                         st = close_handler (conn , recvBuff);
                         break;
                 }
         }
+        return;
 }
 
 /*Function to Handle the file open Call */
@@ -52,12 +55,14 @@ open_handler (int conn , char *recvBuff) {
         memcpy (data , &recvBuff[ind] , 1);
         ind += 1;
         mode = atoi (data);
+        /*
         memset (len , 0 , sizeof (len));
         memcpy (len , &recvBuff[ind] , 1);
         ind += 1;
+         */
         /*Pointer to structure that represents details of newly opened File*/
-        memcpy (file , &recvBuff[ind] , atoi (len));
-        res = r_Open (filename , mode , file);
+        memcpy (file , &recvBuff[ind] , sizeof (r_file));
+        res = r_open (filename , mode , file);
         memset (sendBuff , 0 , sizeof (sendBuff));
         memset (data , 0 , sizeof (data));
         memset (len , 0 , sizeof (len));
@@ -65,13 +70,13 @@ open_handler (int conn , char *recvBuff) {
         if (res == 0) {
                 sprintf (data , "%d" , res);
                 strcat (sendBuff , data);
-                p_size = sizeof (file);
+                /*p_size = sizeof (file);
                 sprintf (len , "%d" , p_size);
                 strcat (sendBuff , len);
-                char temp_buff[p_size];
+                char temp_buff[p_size];*/
 
-                memcpy (temp_buff , &file , p_size);
-                strcat (sendBuff , temp_buff);
+                memcpy (sendBuff + strlen (sendBuff) , &file , sizeof (r_file));
+                //strcat (sendBuff , temp_buff);
         } else {
                 sprintf (data , "%d" , 1);
                 strcat (sendBuff , data);
@@ -82,10 +87,7 @@ open_handler (int conn , char *recvBuff) {
         }
         /*Sending the Buffer content to the client */
         write (conn , sendBuff , sizeof(sendBuff)-1);
-        if (res == 0)
-                return 1;
-        else
-                return 0;
+        return 0;
 }
 
 /*Function to Handle the file close Call */
@@ -95,11 +97,11 @@ close_handler (int conn , char *recvBuff) {
         char sendBuff[1024] , len[5] , data[1000];
         r_file *file = NULL;
 
-        memset (len , 0 , sizeof (len));
+        /*memset (len , 0 , sizeof (len));
         memcpy (len , &recvBuff[ind] , 1);
-        ind += 1;
+        ind += 1;*/
         /*File Structure containing details of file to be Closed */
-        memcpy (file , &recvBuff[ind] , atoi (len));
+        memcpy (file , &recvBuff[ind] , sizeof (r_file));
         res = r_close (file);
         memset (sendBuff , 0 , sizeof (sendBuff));
         memset (data , 0 , sizeof (data));
@@ -119,4 +121,3 @@ close_handler (int conn , char *recvBuff) {
         write (conn , sendBuff , sizeof(sendBuff)-1);
         return 0;
 }
-

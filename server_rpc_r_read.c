@@ -6,7 +6,7 @@ read_handler (int conn , char *recvBuff) {
         char len[10] , data[100] , sendBuff[1024] , *buffer;
         int read_status , p_size , ind = 0;
         ssize_t size;
-        r_file file;
+        r_file *file;
 
         memset (data , 0 , sizeof(data));
         memset (len , 0 , sizeof(len));
@@ -27,7 +27,7 @@ read_handler (int conn , char *recvBuff) {
 
         memcpy (&file , &recvBuff[ind] , p_size);
 
-        size = r_read(file , buffer , size);
+        size = r_read (file , buffer , size);
 
         if (size == read_failed || size == not_enough_content ||
         size == file_not_open) {

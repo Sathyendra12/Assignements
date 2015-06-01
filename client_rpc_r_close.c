@@ -16,13 +16,13 @@ rClose (struct r_file *file) {
                 memset (sendBuff , 0 , sizeof (sendBuff));
                 sprintf (data , "%d" , _r_close);
                 strcat (sendBuff , data);
-                p_size = sizeof (file);
+                /*p_size = sizeof (file);
                 sprintf (len , "%d" , p_size);
-                char temp_buff[p_size];
+                char temp_buff[p_size];*/
 
-                memcpy (temp_buff , &file , p_size);
-                strcat (sendBuff , len);
-                strcat (sendBuff , temp_buff);
+                memcpy (sendBuff + strlen (sendBuff) , &file , sizeof (r_file));
+                /*strcat (sendBuff , len);
+                strcat (sendBuff , sendBuff);*/
                 /*Sending the Buffer content to the server */
                 write (sockfd , sendBuff , sizeof(sendBuff)-1);
                 /*Receiving server response */
@@ -41,5 +41,14 @@ rClose (struct r_file *file) {
         } else {
                 return 1;
         }
+}
+
+
+int
+main () {
+        r_file *file;
+        int n= rClose (file);
+        printf ("RES : %d",n);
+
 }
 

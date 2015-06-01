@@ -1,9 +1,8 @@
 #include "rudi_client.h"
 
-/*Open call that marshals the client request to the server
- * & receives the response */
+/*Open call that marshals the client request to the server & receives the response */
 int
-r_Open (const char *filename, unsigned int mode, struct r_file *file) {
+r_open (const char *filename, unsigned int mode, struct r_file *file) {
         char sendBuff[1024] , recvBuff[1024] , len[5] , data[500];
         int p_size , res , ind = 0;
 
@@ -18,13 +17,13 @@ r_Open (const char *filename, unsigned int mode, struct r_file *file) {
                 strcat (sendBuff , filename);
                 sprintf (data , "%d" , mode);
                 strcat (sendBuff , data);
-                p_size = sizeof (file);
+                /*p_size = sizeof (file);
                 sprintf (len , "%d" , p_size);
                 strcat (sendBuff , len);
-                char temp_buff[p_size];
+                char temp_buff[p_size];*/
 
-                memcpy (temp_buff , &file , p_size);
-                strcat (sendBuff , temp_buff);
+                memcpy (sendBuff + strlen (sendBuff) , &file , p_size);
+                //strcat (sendBuff , temp_buff);
                 /*Sending the Buffer content to the server */
                 write (sockfd , sendBuff , sizeof(sendBuff)-1);
                 /*Receiving server response */
@@ -46,3 +45,13 @@ r_Open (const char *filename, unsigned int mode, struct r_file *file) {
                 return 1;
         }
 }
+/*
+int
+main () {
+        char *filename = "abcd.txt";
+        struct r_file *file;
+        file->inode_number = 102;
+        file->fd = 2;
+        int n = r_Open (filename, O_RDONLY , file);
+        printf ("Res: %d",n);
+}*/
