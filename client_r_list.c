@@ -14,7 +14,7 @@ rList (r_dentry *list) {
         } else {
                 printf ("\tSl.No \tFileName");
                 for (ptr = list , index = 0 ; ptr != NULL ; ptr = ptr->next) {
-                        pintf ("\t%d) \t%s ", index++ , ptr->name);
+                        printf ("\t%d) \t%s ", index++ , ptr->name);
                 }
                 return 0;
         }

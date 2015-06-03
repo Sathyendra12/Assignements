@@ -14,7 +14,7 @@ r_inode
 
 /*Function to Open a file requested by the Client */
 int
-r_open (const char *filename , unsigned int mode , struct r_file *file) {
+r_open (const char *filename , unsigned int mode , struct r_file **file) {
         int err = 1;
         pthread_mutex_t open_lock = PTHREAD_MUTEX_INITIALIZER;
         struct stat file_info;
@@ -25,7 +25,7 @@ r_open (const char *filename , unsigned int mode , struct r_file *file) {
 
         strcpy (f_name , exp_point);
         strcat (f_name , filename);
-        int fd = open (filename , mode);
+        int fd = open (f_name , mode);
 
         if (fd != -1) {
                 /*To get the properties of a file */
@@ -50,6 +50,7 @@ r_open (const char *filename , unsigned int mode , struct r_file *file) {
                                 temp_node->prev = NULL;
                                 pthread_mutex_lock (&open_lock);
                                 ino = temp_node;
+                                op_tab = temp_node;
                                 pthread_mutex_unlock (&open_lock);
                         } else if (ino->inode_number != inode &&
                         ino->next == NULL) {
@@ -61,8 +62,8 @@ r_open (const char *filename , unsigned int mode , struct r_file *file) {
                                 temp_node->inode_number = inode;
                                 temp_node->fd_list = NULL;
                                 temp_node->next = NULL;
-                                temp_node->prev = NULL;
                                 pthread_mutex_lock (&open_lock);
+                                temp_node->prev = ino;
                                 ino->next = temp_node;
                                 pthread_mutex_unlock (&open_lock);
                         } else {
@@ -85,6 +86,7 @@ r_open (const char *filename , unsigned int mode , struct r_file *file) {
                                         ;
                                 pthread_mutex_lock (&open_lock);
                                 temp_fd->next = new_fd;
+                                new_fd->prev = temp_fd;
                                 pthread_mutex_unlock (&open_lock);
                         } else {
                                 pthread_mutex_lock (&open_lock);
@@ -92,11 +94,11 @@ r_open (const char *filename , unsigned int mode , struct r_file *file) {
                                 pthread_mutex_unlock (&open_lock);
                         }
                         /*Create a newly opened file model*/
-                        file = (r_file *) malloc (sizeof (r_file));
-                        if (file == NULL)
+                        *file = (r_file *) malloc (sizeof (r_file));
+                        if (*file == NULL)
                                 goto out;
-                        file->inode_number = inode;
-                        file->fd = fd;
+                        (*file)->inode_number = inode;
+                        (*file)->fd = fd;
                         return 0;
                 }
         } else {
@@ -106,16 +108,8 @@ out:    if (temp_node != NULL)
                 free (temp_node);
         if (new_fd != NULL)
                 free (new_fd);
-        if (file != NULL)
-                free (file);
-        file = NULL;
+        if (*file != NULL)
+                free (*file);
+        *file = NULL;
         return err;
 }
-
-/*
-int
-main () {
-        struct r_file *rf = NULL;
-        char *str = "abcd.txt";
-        int n = r_open (str , O_RDONLY , rf);
-}*/

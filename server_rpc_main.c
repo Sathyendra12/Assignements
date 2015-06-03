@@ -10,7 +10,8 @@ main () {
         pthread_t thread_id;
 
         listenfd = socket (PF_INET , SOCK_STREAM , 0);
-        printf ("Server Initializing...\n\nSocket retrieve successful\n");
+        op_tab = NULL;
+        printf ("Server Initializing...\nSocket retrieve successful\n\n");
         serv_addr.sin_family = AF_INET;
         serv_addr.sin_addr.s_addr = htonl (INADDR_ANY);
         serv_addr.sin_port = htons (5000);

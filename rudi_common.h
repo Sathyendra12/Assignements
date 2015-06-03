@@ -10,7 +10,8 @@ enum fun_list {_r_list = 101 , _r_open = 102 , _r_read = 103 , _r_close = 104 };
 
 /*Enumeration for Error List */
 enum err_list {directory_empty = 11 , file_not_found = 12 ,
-file_not_open = 13 , not_enough_content = 14 , not_a_file = 15};
+file_not_open = 13 , not_enough_content = 14 , not_a_file = 15 ,
+read_failed = 16};
 
 /*Export Point Directory content */
 struct r_dentry {
@@ -47,7 +48,7 @@ r_list (struct r_dentry *list);
 
 /*To open the specified file & make a table entry */
 int
-r_open (const char *filename , unsigned int mode , struct r_file *file);
+r_open (const char *filename , unsigned int mode , struct r_file **file);
 
 /*To read from the file in export point*/
 ssize_t

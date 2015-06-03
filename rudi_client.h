@@ -2,7 +2,7 @@
 
 /*Connection Parameters */
 char server_name[100];
-unsigned int server_port = 0;
+unsigned int server_port;
 
 /*To initialize the server connection */
 int
@@ -10,7 +10,7 @@ init_rClient (char *host_name , unsigned int port);
 
 /*To open the file on the remote server */
 int
-rOpen (const char *filename , unsigned int mode , struct r_file *file);
+rOpen (const char *filename , unsigned int mode , struct r_file **file);
 
 /*To read the opened remote file from server*/
 ssize_t
@@ -25,5 +25,8 @@ int
 rClose (struct r_file *file);
 
 /*Server Connection Identifier */
-int sockfd = -1;
+int sockfd;
+
+/*Pointer to List of Files*/
+r_dentry *root;
 

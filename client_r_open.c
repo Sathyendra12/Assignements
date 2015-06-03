@@ -2,11 +2,18 @@
 
 /*Client API function to Open the Remote File */
 int
-rOpen (const char *filename , unsigned int mode , struct r_file *file) {
+rOpen (const char *filename , unsigned int mode , struct r_file **file) {
+        if (*file == NULL || (*file)->inode_number == 0l) {
+                *file = (r_file *) malloc (sizeof (r_file));
+        } else {
+                printf ("WARNING: A file is already open.\n");
+                printf ("Please close the file, before opening new one.\n");
+                return 0;
+        }
         int res = r_open (filename , mode , file);
 
         if (res == 0) {
-                printf ("File : %s is opened.\n" , filename);
+                printf ("File : %s is opened\n" , filename);
                 printf ("Operation Successful\n\n");
                 return 0;
         } else if (res == not_a_file) {
@@ -19,5 +26,7 @@ rOpen (const char *filename , unsigned int mode , struct r_file *file) {
                 printf ("ERROR: Could not Open the file.\n");
         }
         printf ("Operation Failed\n\n");
+        if (*file != NULL)
+                free (*file);
         return 1;
 }

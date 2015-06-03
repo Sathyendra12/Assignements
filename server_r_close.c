@@ -8,8 +8,7 @@ r_inode
         r_inode *temp_node = NULL;
 
         for (temp_node = op_tab ; temp_node != NULL &&
-        temp_node->inode_number != inode &&
-        temp_node != NULL ; temp_node = temp_node->next)
+        temp_node->inode_number != inode ; temp_node = temp_node->next)
                 ;
         return temp_node;
 }
@@ -32,6 +31,7 @@ r_close (struct r_file *file) {
         int err = 1;
         pthread_mutex_t close_lock = PTHREAD_MUTEX_INITIALIZER;
         r_inode *temp_node = NULL , *temp_node_prev = NULL;
+        r_inode *temp_node_next = NULL;
         /*Find whether the file open */
         temp_node = findc_ino_exist (file->inode_number);
         if (temp_node == NULL) {
@@ -40,6 +40,8 @@ r_close (struct r_file *file) {
                 return err;
         } else {
                 r_fd *temp_fd = NULL , *temp_fd_prev = NULL;
+                r_fd *temp_fd_next = NULL;
+
                 /*Finding the entry in open file list */
                 temp_fd = find_fd_exist (temp_node->fd_list , file->fd);
                 if (temp_fd == NULL) {
@@ -50,21 +52,49 @@ r_close (struct r_file *file) {
                         /*Close & return success */
                         pthread_mutex_lock (&close_lock);
                         close (file->fd);
-                        if (temp_fd->prev == NULL) {
+                        if (temp_fd->prev == NULL && temp_fd->next == NULL) {
                                 /*For the only fd open for the file */
-                                temp_node_prev = temp_node->prev;
-                                temp_node_prev->next = temp_node->next;
-                                free (temp_node);
-                                temp_node = temp_node_prev->next;
-                                temp_node->prev = temp_node_prev;
-                        } else {
-                                /*For the file that has more open fds */
+                                temp_node->fd_list = NULL;
+                        } else if (temp_fd->prev == NULL &&
+                        temp_fd->next != NULL) {
+                                /*For first fd node */
+                                temp_node->fd_list = temp_fd->next;
+                                temp_fd_next = temp_fd->next;
+                                temp_fd_next->prev = NULL;
+                                temp_fd->next = NULL;
+                        } else if (temp_fd->next == NULL) {
+                                /*For last fd node */
                                 temp_fd_prev = temp_fd->prev;
-                                temp_fd_prev->next = temp_fd->next;
-                                free (temp_node);
-                                if (temp_fd_prev->next != NULL) {
-                                        temp_fd = temp_fd_prev->next;
-                                        temp_fd->prev = temp_fd_prev;
+                                temp_fd_prev->next = NULL;
+                                temp_fd->prev = NULL;
+                        } else {
+                                /*For intermediate nodes */
+                                temp_fd_prev = temp_fd->prev;
+                                temp_fd_next = temp_fd->next;
+                                temp_fd_prev->next = temp_fd_next;
+                                temp_fd_next->prev = temp_fd_prev;
+                        }
+                        free (temp_fd);
+                        if (temp_node->fd_list == NULL) {
+                                if (temp_node->next == NULL &&
+                                temp_node->prev == NULL) {
+                                        free (temp_node);
+                                        op_tab = NULL;
+                                } else if (temp_node->prev == NULL) {
+                                        temp_node_next = temp_node->next;
+                                        free(temp_node);
+                                        temp_node_next->prev = NULL;
+                                        op_tab = temp_node_next;
+                                } else if (temp_node->next == NULL) {
+                                        temp_node_prev = temp_node->prev;
+                                        temp_node_prev->next = NULL;
+                                        free (temp_node);
+                                } else {
+                                        temp_node_prev = temp_node->prev;
+                                        temp_node_next = temp_node->next;
+                                        temp_node_next->prev = temp_node_prev;
+                                        temp_node_prev->next = temp_node_next;
+                                        free (temp_node);
                                 }
                         }
                         pthread_mutex_unlock (&close_lock);

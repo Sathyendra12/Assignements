@@ -5,7 +5,10 @@ int
 rClose (struct r_file *file) {
         int res = 1;
 
-        if (file == NULL) {
+        if (file != NULL && file->inode_number != 0l) {
+                printf ("Request to close file.\nINODE : %ul - FD : %d\n" ,
+                        file->inode_number , file->fd);
+        } else {
                 printf ("Invalid Request\n\n");
                 return 1;
         }
@@ -13,6 +16,7 @@ rClose (struct r_file *file) {
         if (res == 0) {
                 printf ("Requested file is closed\n");
                 printf ("Operation Successful\n\n");
+                free (file);
                 sockfd = -1;
                 return 0;
         } else if (res == file_not_open) {

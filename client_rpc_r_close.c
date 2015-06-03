@@ -2,7 +2,7 @@
 
 /*TO close the open file on the remote Server*/
 int
-rClose (struct r_file *file) {
+r_close (struct r_file *file) {
         char sendBuff[1024] , recvBuff[1024] , len[5] , data[500];
         int p_size , res;
 
@@ -16,17 +16,11 @@ rClose (struct r_file *file) {
                 memset (sendBuff , 0 , sizeof (sendBuff));
                 sprintf (data , "%d" , _r_close);
                 strcat (sendBuff , data);
-                /*p_size = sizeof (file);
-                sprintf (len , "%d" , p_size);
-                char temp_buff[p_size];*/
-
-                memcpy (sendBuff + strlen (sendBuff) , &file , sizeof (r_file));
-                /*strcat (sendBuff , len);
-                strcat (sendBuff , sendBuff);*/
+                memcpy (sendBuff + strlen (sendBuff) , file , sizeof (r_file));
                 /*Sending the Buffer content to the server */
-                write (sockfd , sendBuff , sizeof(sendBuff)-1);
+                write (sockfd , sendBuff , sizeof(sendBuff) - 1);
                 /*Receiving server response */
-                p_size = read (sockfd , recvBuff , sizeof(recvBuff)-1);
+                p_size = read (sockfd , recvBuff , sizeof(recvBuff) - 1);
                 recvBuff[p_size] = 0;
                 /*Unmarshalling the response */
                 memset (data , 0 , sizeof (data));
@@ -42,13 +36,3 @@ rClose (struct r_file *file) {
                 return 1;
         }
 }
-
-
-int
-main () {
-        r_file *file;
-        int n= rClose (file);
-        printf ("RES : %d",n);
-
-}
-
