@@ -22,14 +22,20 @@ read_handler (int conn , char *recvBuff) {
         memcpy (file , &recvBuff[ind] , sizeof(r_file));
 
         size = r_read1 (file , buffer , size);
-        if (size == 16 || size == 14 ||
-        size == 13) {
+
+        if (size == -1 || size == -2) {
                 memset (sendBuff , 0 , sizeof(sendBuff));
-                sprintf (data , "%d" , 1);
-                strcat (sendBuff , data);
 
                 memset (data , 0 , sizeof(data));
-                sprintf (data , "%d" , size);
+                sprintf (data , "%d" , 1);
+                strcat (sendBuff , data);
+                memset (data , 0 , sizeof(data));
+
+                if (size == -1)
+                        sprintf (data , "%d" , read_failed);
+                else
+                        sprintf (data , "%d" , not_enough_content);
+
                 strcat (sendBuff , data);
         } else {
 

@@ -2,23 +2,32 @@
 
 ssize_t
 rRead (r_file *file, char *buffer, ssize_t size) {
-        int st;
 
-        if (file != NULL) {
-                int siz = r_read (file , buffer , size);
+        int sta = size;
 
-                st = atoi (buffer);
-                if (siz == 1 && size != 1) {
-                        if (st == 16)
-                                printf ("ERROR: File Not Open\nRead failed\n");
-                        else if (st == 14)
-                                printf ("ERROR: Not Enough Content\n");
-                } else if (siz < size) {
-                        printf ("File only Contains : %d bytes\n" , siz);
-                        printf ("File Content :\n%s\n\n" , buffer);
+        if (sta > 0) {
+                if (file != NULL) {
+                        int siz = r_read (file , buffer , size);
+
+                        sta = atoi(buffer);
+                        if (siz == -1) {
+                                if (sta == 16) {
+                                        printf ("ERROR: File Not Open\n");
+                                        printf ("\tRead failed\n");
+                                } else if (sta == 14)
+                                        printf ("ERROR: Not Enough Content\n");
+                                else
+                                        printf ("ERROR: Read Failed");
+                        } else if (siz < size) {
+                                printf ("File only Contain  : %d bytes\n",
+                                siz);
+                                printf ("File Content :\n\n%s\n\n" , buffer);
+                        } else
+                                printf ("File Content :\n\n%s\n\n", buffer);
+
                 } else
-                        printf ("File Content :\n%s\n\n" , buffer);
+                        printf ("ERROR: File Not Open\n");
         } else
-                printf ("ERROR: File Not Open\n");
+                printf ("ERROR: Please Enter a Valid Size\n");
         return 0;
 }

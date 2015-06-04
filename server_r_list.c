@@ -3,7 +3,6 @@
 #include <sys/stat.h>
 
 int
-/*server_r_list(r_dentry *list)*/
 server_r_list()
 {
         DIR *dir;
@@ -11,7 +10,7 @@ server_r_list()
         struct stat path_stat;
         r_dentry *new_entry , *node_ptr , *p;
 
-        /*list = NULL;*/
+        root_node = NULL;
         dir = opendir(exp_point);
         if (dir == NULL) {
                 goto out;
@@ -21,8 +20,8 @@ server_r_list()
                         stat(dp->d_name, &path_stat);
 
                         if (strcmp(dp->d_name , ".") &&
-                        strcmp(dp->d_name , "..") &&
-                        S_ISREG(path_stat.st_mode)) {
+                        strcmp(dp->d_name , "..") /*&&
+                        S_ISREG(path_stat.st_mode)*/) {
 
                                 new_entry = (r_dentry *)malloc
                                 (sizeof(r_dentry));
@@ -31,8 +30,8 @@ server_r_list()
                                         goto out;
                                 new_entry->next = NULL;
                                 new_entry->prev = NULL;
+                                strcpy(new_entry->name , dp->d_name);
                                 new_entry->inode_number = dp->d_ino;
-                                new_entry->name = dp->d_name;
                                 if (root_node == NULL) {
                                         root_node = new_entry;
                                         node_ptr = root_node;
@@ -43,12 +42,7 @@ server_r_list()
                                 }
                         }
                 }
-                new_entry = NULL;
-                free(new_entry);
-                /*closedir(dir);*/
         }
-        /*if (root_node != NULL)
-                list = root_node;*/
 out:
         if (root_node != NULL) {
                 return 0;

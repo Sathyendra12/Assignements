@@ -23,9 +23,10 @@ r_read (r_file *file , char *buffer , ssize_t size) {
 
                 if (sendBuff == NULL)
                         return -1;
-                else {
+                else{
                         write (sockfd , sendBuff , sizeof(sendBuff)-1);
                 }
+
                 read_size = read(sockfd , recvBuff , sizeof (recvBuff) - 1);
                 if (read_size == -1) {
                         return -1;
@@ -40,9 +41,9 @@ r_read (r_file *file , char *buffer , ssize_t size) {
                         read_status = atoi(data);
                         if (read_status != 0) {
 
-                                memset (data , 0 , sizeof(data));
+                                memset (buffer , 0 , sizeof(buffer));
                                 memcpy (buffer , &recvBuff[1] , 2);
-                                return 1;
+                                return -1;
 
                         } else {
 
@@ -55,7 +56,7 @@ r_read (r_file *file , char *buffer , ssize_t size) {
                                 read_size = atoi(data);
 
                                 ind += 2;
-                                memset (data , 0 , sizeof(data));
+                                memset (buffer , 0 , sizeof(buffer));
                                 memcpy (buffer , &recvBuff[ind] , read_size);
                                 buffer[read_size] = 0;
                                 return read_size;
