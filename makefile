@@ -18,4 +18,4 @@ client_api: client_r_close.c client_r_init.c client_r_list.c client_r_open.c cli
 	gcc -c client_r_close.c client_r_init.c client_r_list.c client_r_open.c client_r_read.c client_rpc_r_close.c client_rpc_r_list.c client_rpc_r_open.c client_rpc_r_read.c
 
 clean:
-	rm -f *.o *.a
+	rm -f *.o *.a client server

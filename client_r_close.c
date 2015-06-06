@@ -1,29 +1,45 @@
 #include "rudi_client.h"
 
-/*Client API function to Close the Remote File */
+/*Client API function to Close the Remote File 
+ *
+ * INPUT:
+ *      struct r_file **file1 : File to be closed
+ *
+ * OUTPUT:
+ *      int : Success/Failure indicator
+ */
 int
-rClose (struct r_file *file) {
-        int res = 1;
+rClose (struct r_file **file1) {
+        r_file *file = *file1;
+        int ret = -1;
 
         if (file != NULL && file->inode_number != 0l) {
-                printf ("Request to close file.\nINODE : %ul - FD : %d\n" ,
+                printf ("Request to close file.\nINODE : %lu - FD : %d\n" ,
                         file->inode_number , file->fd);
         } else {
                 printf ("Invalid Request\n\n");
-                return 1;
+                ret = 2;
+                goto out;
         }
-        res = r_close (file);
-        if (res == 0) {
+        ret = r_close (file);
+        if (ret == 0) {
                 printf ("Requested file is closed\n");
                 printf ("Operation Successful\n\n");
-                free (file);
-                sockfd = -1;
-                return 0;
-        } else if (res == file_not_open) {
+                ret = 2;
+                goto out;
+        } else if (ret == file_not_open) {
                 printf ("ERROR: Requested file is not Open\n");
         } else {
                 printf ("ERROR: Error in Closing the file\n");
         }
         printf ("Operation Failed\n\n");
-        return 1;
+        ret = -1;
+out:
+        if (ret == 0) {
+                free (file);
+                file = NULL;
+                close (sockfd);
+                sockfd = -1;
+        }
+        return ret;
 }

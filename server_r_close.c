@@ -2,7 +2,14 @@
 #include "rudi_server.h"
 
 /*Function to check if the file is open
- *based on inode entry */
+ *based on inode entry 
+ *
+ * INPUT:
+ *      unsigned long inode :   Inode number of the file to searched
+ * 
+ * OUTPUT:
+ *      r_inode :       Structure that shows the existance of searched inode
+ */
 r_inode
 *findc_ino_exist (unsigned long inode) {
         r_inode *temp_node = NULL;
@@ -14,7 +21,14 @@ r_inode
 }
 
 /*Function to check if the file is open
- *based on fd entry */
+ *based on fd entry 
+ *INPUT:
+ *      r_fd *fd_list : FD List in which to search for
+ *      int fd :        FD to be searched
+ * 
+ * OUTPUT:
+ *      r_fd :       Structure that shows the existance of searched fd
+ */
 r_fd
 *find_fd_exist (r_fd *fd_list , int fd) {
         r_fd *temp_fd = NULL;
@@ -25,10 +39,17 @@ r_fd
         return temp_fd;
 }
 
-/*Function to close a client requested file */
+/*Function to close a client requested file 
+ * INPUTS:
+ *      struct r_file **file :  Structure that will hold details of the file
+ *                              that is to be closed.
+ *
+ * OUTPUT:
+ *      int :   Success/Failure indicator.
+ */
 int
 r_close (struct r_file *file) {
-        int err = 1;
+        int ret = -1;
         pthread_mutex_t close_lock = PTHREAD_MUTEX_INITIALIZER;
         r_inode *temp_node = NULL , *temp_node_prev = NULL;
         r_inode *temp_node_next = NULL;
@@ -36,8 +57,8 @@ r_close (struct r_file *file) {
         temp_node = findc_ino_exist (file->inode_number);
         if (temp_node == NULL) {
                 /*File Inode entry itself is not found */
-                err = file_not_open;
-                return err;
+                ret = file_not_open;
+                goto out;
         } else {
                 r_fd *temp_fd = NULL , *temp_fd_prev = NULL;
                 r_fd *temp_fd_next = NULL;
@@ -46,8 +67,8 @@ r_close (struct r_file *file) {
                 temp_fd = find_fd_exist (temp_node->fd_list , file->fd);
                 if (temp_fd == NULL) {
                         /*File not open */
-                        err = file_not_open;
-                        return err;
+                        ret = file_not_open;
+                        goto out;
                 } else {
                         /*Close & return success */
                         pthread_mutex_lock (&close_lock);
@@ -99,7 +120,10 @@ r_close (struct r_file *file) {
                         }
                         pthread_mutex_unlock (&close_lock);
                         free (file);
-                        return 0;
+                        ret = 0;
+                        goto out;
                 }
         }
+out:
+        return ret;
 }

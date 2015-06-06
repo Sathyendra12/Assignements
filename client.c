@@ -6,13 +6,13 @@ int
 main (int argc , char *argv[]) {
         r_file *file = NULL;
         r_dentry *list = NULL;
-        char fname[500] , buffer[1024];
+        char fname[500] , buffer[1024] , cch;
         int ch = 0 , st = 0;
         ssize_t size;
 
         /*Check Input parameter */
         if (argc != 3) {
-                printf ("No Connection parameters..!!\nPass IP & Port\n");
+                printf ("No Connection parameters..!!\nPass IP & Port\nExample: ./Client 127.0.0.1 5000\n\n");
                 return 0;
         }
         printf ("IP:%s\nPort:%s\n" , argv[1] , argv[2]);
@@ -20,12 +20,19 @@ main (int argc , char *argv[]) {
 
         /*On successful Connection */
         if (st == 0) {
-                while (ch != 5) {
-                        printf ("\n--- MENU ---\n1.Files\n");
+                while (1) {
+menu:                  printf ("\n--- MENU ---\n1.Files\n");
                         printf ("2.Open A File\n3.Read File\n");
-                        printf ("4.Close File\n5.Exit\nEnter your choice:\t");
-                        scanf("%d" , &ch);
-                        if (sockfd == -1 && ch != 5) {
+                        printf ("4.Close File\nEnter your choice:\t");
+                        scanf(" %c" , &cch);
+                        while ( getchar() != '\n' );
+                        if ((cch - '0') <= 0 || (cch - '0') >= 5) {
+                                printf ("\n--Invalid Choice--\n\n");
+                                goto menu;
+                        } else {
+                                ch = cch - '0';
+                        }
+                        if (sockfd == -1) {
                                 st = init_rClient (argv[1] , atoi (argv[2]));
                                 /*On Failure */
                                 if (st != 0)
@@ -40,7 +47,7 @@ main (int argc , char *argv[]) {
                                 scanf ("%s" , &fname);
                                 st = rOpen(fname , O_RDONLY , &file);
                                 if (st == 0)
-                                        printf ("File INODE: %ul - FD: %d\n" ,
+                                        printf ("File INODE: %lu - FD: %d\n" ,
                                         file->inode_number , file->fd);
                                 break;
                         case 3:
@@ -49,13 +56,22 @@ main (int argc , char *argv[]) {
                                 rRead (file , buffer , size);
                                 break;
                         case 4:
-                                st = rClose (file);
-                                break;
-                        case 5:
-                                printf ("Terminating..\n");
+                                st = rClose (&file);
                                 break;
                         default:
                                 printf ("\n-- INVALID CHOICE --\n\n");
+                        }
+                        if (st == 2) {
+                                char cont;
+
+input:                          printf ("Do you want to continue..?(y/n)\t");
+                                scanf (" %c" , &cont);
+                                if (cont == 'n')
+                                        break;
+                                else if (cont != 'y') {
+                                        printf ("\n--Invalid Choice--\n\n");
+                                        goto input;
+                                }
                         }
                 }
         }

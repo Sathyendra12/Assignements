@@ -1,7 +1,13 @@
 #include <sys/stat.h>
 #include "rudi_server.h"
 
-/*Function to check existance of Inode entry in open file table*/
+/*Function to check existance of Inode entry in open file table
+ *INPUT:
+ *      unsigned long inode :   Inode number of the file to searched
+ * 
+ * OUTPUT:
+ *      r_inode :       Structure that shows the existance of searched inode
+ */
 r_inode
 *find_ino_exist (unsigned long inode) {
         r_inode *ino = NULL;
@@ -12,10 +18,19 @@ r_inode
         return ino;
 }
 
-/*Function to Open a file requested by the Client */
+/*Function to Open a file requested by the Client 
+ * INPUTS:
+ *      const char *filename :  Name of the file to be opened
+ *      unsigned int mode :     File open mode
+ *      struct r_file **file :  Structure that will hold details of the file
+ *                              that is opend by the call.
+ *
+ * OUTPUT:
+ *      int :   Success/Failure indicator.
+ */
 int
 r_open (const char *filename , unsigned int mode , struct r_file **file) {
-        int err = 1;
+        int ret = -1;
         pthread_mutex_t open_lock = PTHREAD_MUTEX_INITIALIZER;
         struct stat file_info;
         r_inode *ino = NULL;
@@ -32,7 +47,7 @@ r_open (const char *filename , unsigned int mode , struct r_file **file) {
                 fstat (fd, &file_info);
                 /*Check whether the file is normal file */
                 if (!S_ISREG (file_info.st_mode)) {
-                        err = not_a_file;
+                        ret = not_a_file;
                         close (fd);
                 } else {
                         /*Getting Inode number of the file */
@@ -99,10 +114,10 @@ r_open (const char *filename , unsigned int mode , struct r_file **file) {
                                 goto out;
                         (*file)->inode_number = inode;
                         (*file)->fd = fd;
-                        return 0;
+                        ret = 0;
                 }
         } else {
-                err = file_not_found;
+                ret = file_not_found;
         }
 out:    if (temp_node != NULL)
                 free (temp_node);
@@ -111,5 +126,5 @@ out:    if (temp_node != NULL)
         if (*file != NULL)
                 free (*file);
         *file = NULL;
-        return err;
+        return ret;
 }

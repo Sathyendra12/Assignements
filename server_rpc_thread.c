@@ -1,10 +1,18 @@
 #include "rudi_server.h"
 
-/*Function to Handle the file open Call */
+/*Function to Handle the file open Call
+ *
+ * INPUT:
+ *      int conn :      Socket connection identifier
+ *      char *recvBuff :Buffer containing request
+ *
+ * OUTPUT:
+ *      int :   Success/Failure indicator.
+ */
 int
 open_handler (int conn , char *recvBuff) {
         unsigned int mode;
-        int ind = 3 , res = 0 , p_size;
+        int ind = 3 , res = 0 , ret = -1 , p_size;
 
         char sendBuff[1024] , len[5] , data[1000] , filename[500];
         r_file *file = (r_file *) malloc (sizeof (r_file));
@@ -41,13 +49,22 @@ open_handler (int conn , char *recvBuff) {
         }
         /*Sending the Buffer content to the client */
         write (conn , sendBuff , sizeof(sendBuff)-1);
-        return 0;
+        ret = 0;
+out:
+        return ret;
 }
 
-/*Function to Handle the file close Call */
+/*Function to Handle the file close Call 
+ * INPUT:
+ *      int conn :      Socket connection identifier
+ *      char *recvBuff :Buffer containing request
+ *
+ * OUTPUT:
+ *      int :   Success/Failure indicator.
+ */
 int
 close_handler (int conn , char *recvBuff) {
-        int ind = 3 , res = 0 , ex_code = 0;
+        int ind = 3 , res = 0 , ret = -1;
         char sendBuff[1024] , len[5] , data[1000];
         r_file *file = (r_file *) malloc (sizeof (r_file));
 
@@ -60,7 +77,7 @@ close_handler (int conn , char *recvBuff) {
         if (res == 0) {
                 sprintf (data , "%d" , res);
                 strcat (sendBuff , data);
-                ex_code = 1;
+                ret = -1;
         } else {
                 sprintf (data , "%d" , 1);
                 strcat (sendBuff , data);
@@ -68,13 +85,18 @@ close_handler (int conn , char *recvBuff) {
                 /*Error code*/
                 sprintf (data , "%d" , res);
                 strcat (sendBuff , data);
-                ex_code = 0;
+                ret = 0;
         }
         /*Sending data to the Client */
         write (conn , sendBuff , sizeof (sendBuff) - 1);
-        return ex_code;
+out:
+        return ret;
 }
 
+/*Thread Function
+ * INPUT:
+ *      void *parameter :       Connection Identifier
+ */
 void
 *thread_fun (void *parameter) {
         char recvBuff[1024] , len[5] , data[500];
@@ -109,5 +131,6 @@ void
                         }
                 }
         }
+out:
         return;
 }

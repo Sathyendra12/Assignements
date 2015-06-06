@@ -22,7 +22,7 @@ rList (struct r_dentry *list);
 
 /*TO close the open file on the remote Server*/
 int
-rClose (struct r_file *file);
+rClose (struct r_file **file);
 
 /*Server Connection Identifier */
 int sockfd;
