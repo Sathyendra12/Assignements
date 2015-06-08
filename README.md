@@ -77,32 +77,32 @@ The inode themselves should be maintained in a doubly linked list.
                   int fd;
          }
 ```
-        Clean the fd from the fd_list. If the fd_list is empty the inode should be destroyed  from the inode list.Great care should be taken while modifying the fd list or inode list as there will be multiple threads accessing the same list!
+
+Clean the fd from the fd_list. If the fd_list is empty the inode should be destroyed  from the inode list.Great care should be taken while modifying the fd list or inode list as there will be multiple threads accessing the same list!
 
 
 - #####The RudiClient API library:
 The client API Libray will be a static link which will provide the following API:
 
-    - ***int init_rudiClient (char *host_name, unsigned int port);***
+    ***int init_rudiClient (char *host_name, unsigned int port);***
 initiates the Client API library by setting the global configurable
      - server hostname
      - server port. 
-
-    - ***int rudiOpen (const char *filename, unisgned int mode, struct r_file *file);*** 
+    ***int rudiOpen (const char *filename, unisgned int mode, struct r_file *file);*** 
 Open the file with the specifed mode CREATE or READ. the modes will be represented in a enum. If the call is successful struct r_file *file will point to struct r_file object.
+
 ```
         struct r_file {
                  unsigned long inode_number;       
                   int fd;
         }
 ```
-Return system errors as specified open() system call as mentioned man pages. 
-
-    - ***ssize_t rudiRead ( struct r_file *file, char *buffer, ssize_t size);***
+Return system errors as specified open() system call as mentioned man pages.
+***ssize_t rudiRead ( struct r_file *file, char *buffer, ssize_t size);***
 Read the specified number of bytes (ssize_t size) into the buffer. return values same as normal read() system call. please refer the man pages of read().
-
-    - ***int rudiList (struct r_dentry *list);***
+***int rudiList (struct r_dentry *list);***
 Get the list of files in the export point from the server into the doubly linked list of
+
 ```
 struct r_dentry.
          struct r_dentry {
@@ -112,8 +112,7 @@ struct r_dentry.
                     struct r_dentry *prev;
          }
 ```
-
-    - ***int rudiClose (struct r_file *file);***
+***int rudiClose (struct r_file *file);***
 Closes the file. return value sames a close () system call.
 
 - #####Custom RPC mechasim
