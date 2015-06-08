@@ -1,7 +1,7 @@
 #include "rudi_client.h"
 
 /* Open call that marshals the client request to the server &
- * receives the response 
+ * receives the response
  *
  * INPUTS:
  *      const char *filename :  Name of the file to be opened

@@ -1,6 +1,6 @@
 #include "rudi_client.h"
 
-/*Client API function to Open the Remote File 
+/*Client API function to Open the Remote File
  *
  * INPUTS:
  *      const char *filename :  Name of the file to be opened
@@ -12,6 +12,7 @@
 int
 rOpen (const char *filename , unsigned int mode , struct r_file **file) {
         int ret = -1;
+
         if (*file == NULL || (*file)->inode_number == 0l) {
                 *file = (r_file *) malloc (sizeof (r_file));
         } else {
@@ -38,7 +39,9 @@ rOpen (const char *filename , unsigned int mode , struct r_file **file) {
         printf ("Operation Failed\n\n");
         ret = -1;
 out:
-        if (*file != NULL && ret != 0)
+        if (*file != NULL && ret != 0) {
                 free (*file);
+                *file = NULL;
+        }
         return ret;
 }

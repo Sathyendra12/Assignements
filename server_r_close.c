@@ -2,11 +2,11 @@
 #include "rudi_server.h"
 
 /*Function to check if the file is open
- *based on inode entry 
+ *based on inode entry
  *
  * INPUT:
  *      unsigned long inode :   Inode number of the file to searched
- * 
+ *
  * OUTPUT:
  *      r_inode :       Structure that shows the existance of searched inode
  */
@@ -21,11 +21,11 @@ r_inode
 }
 
 /*Function to check if the file is open
- *based on fd entry 
+ *based on fd entry
  *INPUT:
  *      r_fd *fd_list : FD List in which to search for
  *      int fd :        FD to be searched
- * 
+ *
  * OUTPUT:
  *      r_fd :       Structure that shows the existance of searched fd
  */
@@ -39,17 +39,18 @@ r_fd
         return temp_fd;
 }
 
-/*Function to close a client requested file 
+/*Function to close a client requested file
  * INPUTS:
  *      struct r_file **file :  Structure that will hold details of the file
- *                              that is to be closed.
+ *                              that is to be closed
  *
  * OUTPUT:
- *      int :   Success/Failure indicator.
+ *      int :   Success/Failure indicator
  */
 int
 r_close (struct r_file *file) {
         int ret = -1;
+
         pthread_mutex_t close_lock = PTHREAD_MUTEX_INITIALIZER;
         r_inode *temp_node = NULL , *temp_node_prev = NULL;
         r_inode *temp_node_next = NULL;

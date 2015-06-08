@@ -4,7 +4,7 @@
 /*Function to check existance of Inode entry in open file table
  *INPUT:
  *      unsigned long inode :   Inode number of the file to searched
- * 
+ *
  * OUTPUT:
  *      r_inode :       Structure that shows the existance of searched inode
  */
@@ -18,7 +18,7 @@ r_inode
         return ino;
 }
 
-/*Function to Open a file requested by the Client 
+/*Function to Open a file requested by the Client
  * INPUTS:
  *      const char *filename :  Name of the file to be opened
  *      unsigned int mode :     File open mode
@@ -119,12 +119,14 @@ r_open (const char *filename , unsigned int mode , struct r_file **file) {
         } else {
                 ret = file_not_found;
         }
-out:    if (temp_node != NULL)
-                free (temp_node);
-        if (new_fd != NULL)
-                free (new_fd);
-        if (*file != NULL)
-                free (*file);
-        *file = NULL;
+out:    if (ret != 0) {
+                if (temp_node != NULL)
+                        free (temp_node);
+                if (new_fd != NULL)
+                        free (new_fd);
+                if (*file != NULL)
+                        free (*file);
+                *file = NULL;
+        }
         return ret;
 }
