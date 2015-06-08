@@ -125,19 +125,28 @@ for example the sending the doubly linked list of dentries over the network from
 
 ___Coding Guild-lines (The Ten commandments)___ :
 1. All the structures/functions/#includes/#defines etc which are common to client and server should be in rudi_common.h
+
 2. The Client API should be exposed only via rudi_client.h and all the other functions should be either static or not exposed to the consumer of the API.
+
 3. The code should be compiled using Makefiles only.
+
 4. To test the Client API's a test program should be written.
+
 5. Code should be share only and only via github.com. so create a github account.
+
 6. All the .c and .h files should pass the **checkpatch.pl** test. Checkpatch.pl checks    for coding standards like indentation, extra spaces etc.
 ```   
 $> ./checkpatch.pl -f <.c or .h file_path>
 ```
 There should be no warning or errors when the code is inspected by    
     checkpatch.pl. checkpatch.pl requires **perl**.
+
 7. Code should be well commented and documented. Also the code should be well indented. Each indentation is 8 spaces. Codelite is a good IDE for this purpose.
+
 8. Should have appropriate  variable names, i, j, k, temp, a, b are strictly not allowed.
+
 9. Code should be modular in nature with no memory leaks and core dumps. i,e should be tested well with all scenarios. Automated tests are welcomed.
+
 10. The Code should be submitted incrementally. i.e in incremental patches and not in huge commits.
 
 
