@@ -4,7 +4,7 @@ Implement a rudimentary Network File System called "rudiFS"
 
 ![alt text](https://github.com/Sathyendra12/Assignements/blob/master/img/rudi_FS_microdesign_update1.jpg "")
 
-- #####RudiServer:
+####RudiServer:
 The Server serves out read-only files from single directory which we call an export point. The Server is a multi-thread program that serves multiple clients at a time.
 The Server should cater to the following requests from the clients via custom rpc library (described below)
 
@@ -81,7 +81,7 @@ The inode themselves should be maintained in a doubly linked list.
 Clean the fd from the fd_list. If the fd_list is empty the inode should be destroyed  from the inode list.Great care should be taken while modifying the fd list or inode list as there will be multiple threads accessing the same list!
 
 
-#####The RudiClient API library:
+####The RudiClient API library:
 The client API Libray will be a static link which will provide the following API:
 
 ***int init_rudiClient (char *host_name, unsigned int port);***
@@ -119,7 +119,7 @@ struct r_dentry.
 ***int rudiClose (struct r_file *file);***
 Closes the file. return value sames a close () system call.
 
-#####Custom RPC mechasim
+####Custom RPC mechasim
 should be build which helps in marking the above remote procedure code. The machasim should deal with the marshaling and de-marshaling of in-memory data structures into streamable data buffers.
 for example the sending the doubly linked list of dentries over the network from server to client, when the list call is made.
 
