@@ -8,7 +8,7 @@ Implement a rudimentary Network File System called "rudiFS"
 The Server serves out read-only files from single directory which we call an export point. The Server is a multi-thread program that serves multiple clients at a time.
 The Server should cater to the following requests from the clients via custom rpc library (described below)
 
-    - ***List*** all the files in that directory: return rpc value: buffer that contains lists of files in the export point. It should be the list of struct r_dentry objects.
+- ***List*** all the files in that directory: return rpc value: buffer that contains lists of files in the export point. It should be the list of struct r_dentry objects.
 Remember the file name are POSIX complaint i.e they can have spaces and other allowed special characters in the file name. 
 
 ```
