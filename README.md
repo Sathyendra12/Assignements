@@ -2,6 +2,8 @@
 
 Implement a rudimentary Network File System called "rudiFS"
 
+![alt text](https://github.com/Sathyendra12/Assignements/blob/master/img/rudi_FS_microdesign_update1.jpg "")
+
 - #####RudiServer:
 The Server serves out read-only files from single directory which we call an export point. The Server is a multi-thread program that serves multiple clients at a time.
 The Server should cater to the following requests from the clients via custom rpc library (described below)
@@ -135,6 +137,5 @@ There should be no warning or errors when the code is inspected by
 9. Code should be modular in nature with no memory leaks and core dumps. i,e should be tested well with all scenarios. Automated tests are welcomed.
 10. The Code should be submitted incrementally. i.e in incremental patches and not in huge commits.
 
-![alt text]: (https://github.com/Sathyendra12/Assignements/blob/master/img/rudi_FS_microdesign_update1.jpg)
 
 
