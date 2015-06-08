@@ -60,8 +60,8 @@ The inode themselves should be maintained in a doubly linked list.
                   int fd;
          }
 ```
- - input rpc parameter: size of data to be read.
- - return rpc values:
+  - input rpc parameter: size of data to be read.
+  - return rpc values:
     - return value from the actual read() system call i.e number of bytes read or error code.
     - Read data in the buffer.
 
