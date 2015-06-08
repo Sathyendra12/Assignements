@@ -134,12 +134,7 @@ ___Coding Guild-lines (The Ten commandments)___ :
 
 5. Code should be share only and only via github.com. so create a github account.
 
-6. All the .c and .h files should pass the **checkpatch.pl** test. Checkpatch.pl checks    for coding standards like indentation, extra spaces etc.
-```   
-$> ./checkpatch.pl -f <.c or .h file_path>
-```
-There should be no warning or errors when the code is inspected by    
-    checkpatch.pl. checkpatch.pl requires **perl**.
+6. All the .c and .h files should pass the **checkpatch.pl** test. Checkpatch.pl checks    for coding standards like indentation, extra spaces etc. $> ./checkpatch.pl -f <.c or .h file_path>. There should be no warning or errors when the code is inspected by checkpatch.pl. checkpatch.pl requires **perl**.
 
 7. Code should be well commented and documented. Also the code should be well indented. Each indentation is 8 spaces. Codelite is a good IDE for this purpose.
 
