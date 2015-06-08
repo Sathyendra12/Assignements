@@ -1,10 +1,24 @@
+/* This function unmarshal the read request from the client and perform the 
+ * requested task and marshal the response and send it to the server
+ * 
+ * input parameters:
+ *                      int conn                 :socket connection identifier
+ * 
+ *                      char *recvBuff                :this contains the client
+ * request
+ * 
+ * 
+ * output parameters:
+ *                      int         :Success(0)/Failure(-1) indicator
+ * */
+
 #include "rudi_server.h"
 
 int
 read_handler (int conn , char *recvBuff) {
 
         char len[10] , data[100] , sendBuff[1024] , *buffer;
-        int read_status , p_size , ind = 0;
+        int read_status = 0 , p_size = 0 , ind = 0 , ret = -1;
         ssize_t size;
         r_file *file = (r_file *) malloc (sizeof (r_file));
 
@@ -21,9 +35,11 @@ read_handler (int conn , char *recvBuff) {
 
         memcpy (file , &recvBuff[ind] , sizeof(r_file));
 
+        /* request to read the files */
         size = r_read1 (file , buffer , size);
 
         if (size == -1 || size == -2) {
+                /*storing the error enums into the buffer*/
                 memset (sendBuff , 0 , sizeof(sendBuff));
 
                 memset (data , 0 , sizeof(data));
@@ -37,8 +53,11 @@ read_handler (int conn , char *recvBuff) {
                         sprintf (data , "%d" , not_enough_content);
 
                 strcat (sendBuff , data);
+                ret = 0;
+                goto out;
         } else {
 
+                /*storing the file contents into the buffer*/
                 memset (sendBuff , 0 , sizeof(sendBuff));
                 sprintf (data , "%d" , 0);
                 strcat (sendBuff , data);
@@ -51,9 +70,12 @@ read_handler (int conn , char *recvBuff) {
                 strcat (sendBuff , data);
 
                 strcat (sendBuff , buffer);
+                ret = 0;
+                goto out;
         }
 
 out:
+        free(file);
         write (conn , sendBuff , sizeof(sendBuff)-1);
-        return 0;
+        return ret;
 }

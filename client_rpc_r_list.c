@@ -1,10 +1,22 @@
+/* This function marshal the list request from the clinet send it to the server and
+ * receives the response from the server and unmarshal it and then send it to
+ * the client
+ * 
+ * inputs parameters:
+ *                      struct r_dentry *list  :this will be the pointer to 
+ * the linked list sent from the server
+ * 
+ * output parameters:
+ *                      int :Success(0)/Failure(-1) indicator
+ * */
+
 #include "rudi_client.h"
 
 int
 r_list (struct r_dentry *list) {
 
         char sendBuff[1024] , data[100] , recvBuff[1024];
-        int read_status , read_bytes , index = 0;
+        int read_status , read_bytes , index = 0 , ret = -1;
         r_dentry *new_entry , *node_ptr;
 
         if (sockfd >= 0) {
@@ -14,6 +26,7 @@ r_list (struct r_dentry *list) {
                 strcat (sendBuff , data);
 
                 if (sendBuff == NULL) {
+                        ret = -1;
                         goto out;
                 } else
                         write (sockfd , sendBuff , sizeof(sendBuff)-1);
@@ -31,10 +44,8 @@ r_list (struct r_dentry *list) {
                         read_status = atoi(data);
                         memset (data , 0 , sizeof(data));
                         if (read_status == 1) {
-                                /* Extracting the error enum to send response
-                                 * to client */
-                                memcpy (data , recvBuff + 1 , 2);
-                                return atoi(data);
+                                ret = -1;
+                                goto out;
                         } else {
                                 /*Extracting the next two character of the
                                  * recvBuff as it contains the number of files
@@ -74,18 +85,26 @@ r_list (struct r_dentry *list) {
                                         index += 1;
 
                                 }
-
                                 list = root;
+                                ret = 0;
+                                goto out;
 
                         }
                 } else if (read_bytes == -1) {
+                        ret = -1;
                         goto out;
                 }
-
-                return 0;
         } else {
-                return 1;
+                ret = -1;
+                goto out;
         }
 out:
-        return 1;
+        if (list == NULL)
+        {
+                root = NULL;
+        }
+        memset (sendBuff , 0 , sizeof(sendBuff));
+        memset (recvBuff , 0 , sizeof(recvBuff));
+        memset (data , 0 , sizeof(data));
+        return ret;
 }

@@ -1,21 +1,44 @@
+/*This function is used to print the list of files on the Clinet side
+ * that are available on server Export Point
+ * 
+ * input parameters:
+ *                  struct r_dentry *list    :this will be the pointer to
+ * the linked list sent from the server
+ * 
+ * * output parameters:
+ *                      int :Success(0)/Failure(-1) indicator
+ * */
+
 #include "rudi_client.h"
 
 int
-rList (r_dentry *list) {
+rList (struct r_dentry *list) {
 
-        int fun_status , index;
-        r_dentry *ptr;
+        int ret = -1 , index = 0;
+        r_dentry *ptr = NULL;
 
-        fun_status = r_list (list);
-        if (fun_status == 1) {
+        if (root == NULL)
+                ret = r_list (list);
+        else
+                ret = 0;
+
+        if (ret == -1) {
+
                 printf ("\n Export Point is Empty\n");
-                return 1;
+                ret = -1;
+                goto out;
+
         } else {
+
                 printf("__________________________________________________\n");
                 printf ("\tSl.No \t FileName\n");
                 printf("==================================================\n");
                 for (ptr = root , index = 1 ; ptr != NULL ; ptr = ptr->next)
                         printf ("\t%d)  %s\n", index++ , ptr->name);
-                return 0;
+                ret = -0;
+                goto out;
+
         }
+out:
+        return ret;
 }
