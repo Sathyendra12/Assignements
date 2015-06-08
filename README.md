@@ -123,7 +123,7 @@ Closes the file. return value sames a close () system call.
 should be build which helps in marking the above remote procedure code. The machasim should deal with the marshaling and de-marshaling of in-memory data structures into streamable data buffers.
 for example the sending the doubly linked list of dentries over the network from server to client, when the list call is made.
 
-___Coding Guild-lines (The Ten commandments)___ :
+___Coding guidelines (The Ten commandments)___ :
 1. All the structures/functions/#includes/#defines etc which are common to client and server should be in rudi_common.h
 
 2. The Client API should be exposed only via rudi_client.h and all the other functions should be either static or not exposed to the consumer of the API.
