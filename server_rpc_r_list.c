@@ -1,8 +1,8 @@
 /* This function marshal the linked list response and send it to the client
- * 
+ *
  * inputs parameters:
  *                      int conn        :socket connection identifier
- * 
+ *
  * output parameters:
  *                      int :Success(0)/Failure(-1) indicator
  * */

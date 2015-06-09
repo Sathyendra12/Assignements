@@ -1,13 +1,12 @@
-/* This function unmarshal the read request from the client and perform the 
+/* This function unmarshal the read request from the client and perform the
  * requested task and marshal the response and send it to the server
- * 
+ *
  * input parameters:
  *                      int conn                 :socket connection identifier
- * 
+ *
  *                      char *recvBuff                :this contains the client
  * request
- * 
- * 
+ *
  * output parameters:
  *                      int         :Success(0)/Failure(-1) indicator
  * */
@@ -17,7 +16,7 @@
 int
 read_handler (int conn , char *recvBuff) {
 
-        char len[10] , data[100] , sendBuff[1024] , *buffer;
+        char len[10] , data[100] , sendBuff[1024] , buffer[1024];
         int read_status = 0 , p_size = 0 , ind = 0 , ret = -1;
         ssize_t size;
         r_file *file = (r_file *) malloc (sizeof (r_file));

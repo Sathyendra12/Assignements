@@ -1,10 +1,10 @@
 /*This function is used to print the list of files on the Clinet side
  * that are available on server Export Point
- * 
+ *
  * input parameters:
  *                  struct r_dentry *list    :this will be the pointer to
  * the linked list sent from the server
- * 
+ *
  * * output parameters:
  *                      int :Success(0)/Failure(-1) indicator
  * */
