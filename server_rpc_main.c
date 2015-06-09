@@ -6,7 +6,7 @@
 int
 main () {
         int listenfd = 0 , connfd = 0 , ret = -1;
-        struct sockaddr_in serv_addr;
+        struct sockaddr_in serv_addr , client_addr;
         pthread_t thread_id;
 
         listenfd = socket (PF_INET , SOCK_STREAM , 0);

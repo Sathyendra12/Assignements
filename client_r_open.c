@@ -13,7 +13,7 @@ int
 rOpen (const char *filename , unsigned int mode , struct r_file **file) {
         int ret = -1;
 
-        if (*file == NULL || (*file)->inode_number == 0l) {
+        if (*file == NULL || (*file)->inode_number == 0) {
                 *file = (r_file *) malloc (sizeof (r_file));
         } else {
                 printf ("WARNING: A file is already open.\n");
@@ -31,7 +31,7 @@ rOpen (const char *filename , unsigned int mode , struct r_file **file) {
                 printf ("ERROR: The requested object : %s is not a file.\n"
                         , filename);
         } else if (ret == file_not_found) {
-                printf ("ERROR: The reuested file : %s is not found.\n"
+                printf ("ERROR: The reqested file : %s is not found.\n"
                         , filename);
         } else {
                 printf ("ERROR: Could not Open the file.\n");

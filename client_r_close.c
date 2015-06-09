@@ -37,7 +37,7 @@ rClose (struct r_file **file1) {
 out:
         if (ret == 0) {
                 free (file);
-                file = NULL;
+                *file1 = NULL;
                 close (sockfd);
                 sockfd = -1;
                 ret = 1;

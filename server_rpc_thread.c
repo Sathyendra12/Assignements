@@ -29,7 +29,6 @@ open_handler (int conn , char *recvBuff) {
         memcpy (data , &recvBuff[ind] , 1);
         ind += 1;
         mode = atoi (data);
-
         res = r_open (filename , mode , &file);
         memset (sendBuff , 0 , sizeof (sendBuff));
         memset (data , 0 , sizeof (data));
@@ -109,7 +108,7 @@ void
                 /*Clear the Buffer content */
                 memset (recvBuff , 0 , sizeof (recvBuff));
                 /*Receive marshalled data sent by Client*/
-                p_size = read (conn , recvBuff , sizeof (recvBuff)-1);
+                p_size = read (conn , recvBuff , sizeof (recvBuff) - 1);
                 if (p_size != 0) {
                         recvBuff[p_size] = 0;
                         memset (data , 0 , sizeof (data));

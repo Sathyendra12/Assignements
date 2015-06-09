@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "rudi_client.h"
+#include "../rudi_client.h"
 
 /*Client Main Program that uses the API */
 int
@@ -12,7 +12,8 @@ main (int argc , char *argv[]) {
 
         /*Check Input parameter */
         if (argc != 3) {
-                printf ("No Connection parameters..!!\nPass IP & Port\nExample: ./Client 127.0.0.1 5000\n\n");
+                printf ("No Connection parameters..!!\nPass IP & Port\n");
+                printf ("Example: ./Client 127.0.0.1 5000\n\n");
                 return 0;
         }
         printf ("IP:%s\nPort:%s\n" , argv[1] , argv[2]);
@@ -25,8 +26,11 @@ menu:                  printf ("\n--- MENU ---\n1.Files\n");
                         printf ("2.Open A File\n3.Read File\n");
                         printf ("4.Close File\nEnter your choice:\t");
                         scanf(" %c" , &cch);
-                        while ( getchar() != '\n' );
-                        if ((cch - '0') <= 0 || (cch - '0') >= 5) {
+                        int inv = 0;
+
+                        while (getchar() != '\n')
+                                inv = 1;
+                        if ((cch - '0') <= 0 || (cch - '0') >= 5 || inv == 1) {
                                 printf ("\n--Invalid Choice--\n\n");
                                 goto menu;
                         } else {
@@ -61,7 +65,7 @@ menu:                  printf ("\n--- MENU ---\n1.Files\n");
                         default:
                                 printf ("\n-- INVALID CHOICE --\n\n");
                         }
-                        if (st == 2) {
+                        if (st == 1 || file == NULL) {
                                 char cont;
 
 input:                          printf ("Do you want to continue..?(y/n)\t");
