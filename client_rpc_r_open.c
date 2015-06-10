@@ -14,7 +14,7 @@
  */
 int
 r_open (const char *filename, unsigned int mode, struct r_file **file) {
-        char sendBuff[1024] , recvBuff[1024] , len[5] , data[500];
+        char sendBuff[1024] , recvBuff[1024] , len[5] , data[500] , len_cat[5];
         int p_size , ret = -1 , ind = 0;
 
         if (sockfd >= 0) {
@@ -23,7 +23,15 @@ r_open (const char *filename, unsigned int mode, struct r_file **file) {
                 sprintf (data , "%d" , _r_open);
                 strcat (sendBuff , data);
                 p_size = strlen (filename);
+                memset (len_cat , 0 , sizeof (len_cat));
+                memset (len , 0 , sizeof (len));
+                sprintf (len_cat , "%d" , 0);
+        
                 sprintf (len , "%d" , p_size);
+                if (strlen (len) == 1) {
+                        strcat (len_cat , len);
+                        strcpy (len , len_cat);
+                }
                 strcat (sendBuff , len);
                 strcat (sendBuff , filename);
                 sprintf (data , "%d" , mode);

@@ -18,8 +18,8 @@ open_handler (int conn , char *recvBuff) {
         r_file *file = (r_file *) malloc (sizeof (r_file));
 
         memset (len , 0 , sizeof (len));
-        memcpy (len , &recvBuff[ind] , 1);
-        ind += 1;
+        memcpy (len , &recvBuff[ind] , 2);
+        ind += 2;
         /*Name of the file to Open */
         memset (filename , 0 , sizeof (filename));
         memcpy (filename , &recvBuff[ind] , atoi (len));
