@@ -5,8 +5,8 @@ server: rudi_server.h client_api client
 client:	rudi_client.h client.o librudi librpc
 	gcc -o client client.o -L. -lrudi -lrpc
 
-client.o: rudi_client.h ./test/client.c
-	gcc -c ./test/client.c
+client.o: rudi_client.h ./Test/client.c
+	gcc -c ./Test/client.c
 
 librudi: rudi_client.h client_r_close.o client_r_init.o client_r_list.o client_r_open.o client_r_read.o
 	ar cr librudi.a client_r_close.o client_r_init.o client_r_list.o client_r_open.o client_r_read.o
