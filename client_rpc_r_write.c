@@ -1,17 +1,17 @@
-/* This function marshal the read request from the clinet send it to the server
+/* This function marshal the write request from the clinet send it to the server
  * and receives the response from the server and unmarshal it and then send it
  * to the client
  * 
  * input parameters:
  *                      struct r_file *file         :this will be the file pointer
- * which points to the file to be read
+ * which points to the file to be written
  * 
  *                      char *buffer                :this character pointer points
- * to the file contents that are read from the client or the error enum tha are
- * read from the server
+ * to the file contents that are to be written from the client or the error enum 
+ * that are read from the server
  * 
  *                      ssize_t size                :the size of the file
- * content to be read from the server
+ * content to be written to the server
  * 
  * output parameters:
  *                      ssize_t         :Success(0)/Failure(-1) indicator
@@ -20,16 +20,17 @@
 #include "rudi_client.h"
 
 ssize_t
-r_read (r_file *file , char *buffer , ssize_t size) {
+r_write (r_file *file , char *buffer , ssize_t size) {
 
         char sendBuff[1024] , len[10] , data[100] , recvBuff[1024];
-        int read_status = 0 , p_size = 0 , ind = 0 , ret = -1;
+	char sendData[1020];
+        int write_status = 0 , p_size = 0 , ind = 0 , ret = -1;
         ssize_t read_size;
 
         if (sockfd >= 0) {
                 /* Marshaling the request to send to the server */
                 memset (sendBuff , 0 , sizeof(sendBuff));
-                sprintf (data , "%d" , _r_read);
+                sprintf (data , "%d" , _r_write);
                 strcat (sendBuff , data);
 
                 memset (data , 0 , sizeof(data));
@@ -39,7 +40,10 @@ r_read (r_file *file , char *buffer , ssize_t size) {
                 sprintf (len , "%d" , p_size);
                 strcat (sendBuff , len);
                 strcat (sendBuff , data);
+		strcat (sendBuff , buffer);
+
                 memcpy (sendBuff + strlen (sendBuff) , file , sizeof (r_file));
+                
 
                 if (sendBuff == NULL) {
                         ret = -1;
@@ -60,8 +64,8 @@ r_read (r_file *file , char *buffer , ssize_t size) {
                          * Whether the function call is successful on not*/
                         memset (data , 0 , sizeof(data));
                         memcpy (data , recvBuff , 1);
-                        read_status = atoi(data);
-                        if (read_status != 0) {
+                        write_status = atoi(data);
+                        if (write_status != 0) {
 
                                 memset (buffer , 0 , sizeof(buffer));
                                 memcpy (buffer , &recvBuff[1] , 2);
@@ -78,10 +82,6 @@ r_read (r_file *file , char *buffer , ssize_t size) {
                                 memcpy (data , &recvBuff[2] , ind);
                                 read_size = atoi(data);
 
-                                ind += 2;
-                                memset (buffer , 0 , sizeof(buffer));
-                                memcpy (buffer , &recvBuff[ind] , read_size);
-                                buffer[read_size] = 0;
                                 ret = read_size;
                                 goto out;
                         }

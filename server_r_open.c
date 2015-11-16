@@ -18,6 +18,39 @@ r_inode
         return ino;
 }
 
+int
+find_file_open (const char *name , unsigned int mode) {
+	r_dentry *node = NULL;
+	r_inode *ino = NULL;
+	int ret = 1;
+	for (node = root_node ; node != NULL ; node = node->next) {
+		if (strcmp (node->name , name) == 0) {
+			ino = find_ino_exist (node->inode_number);
+			if (ino != NULL && ino->inode_number == node->inode_number)
+			{
+				if (ino->write_flag == 1) {
+					ret = 1;
+					goto out1;
+				} else {
+					if(mode == 1) {
+						ret = 1;
+						goto out1;
+					} else {
+						ret = 0;
+						goto out1;
+					}
+				}			
+			} 
+			else
+				break;
+		}
+					
+	}
+	ret = 0;
+out1:
+	return ret;
+}
+
 /*Function to Open a file requested by the Client
  * INPUTS:
  *      const char *filename :  Name of the file to be opened
@@ -26,11 +59,12 @@ r_inode
  *                              that is opend by the call.
  *
  * OUTPUT:
- *      int :   Success/Failure indicator.
+ *      int 		     :   Success/Failure indicator.
  */
 int
 r_open (const char *filename , unsigned int mode , struct r_file **file) {
         int ret = -1;
+	int modeFlag = 0; 
         pthread_mutex_t open_lock = PTHREAD_MUTEX_INITIALIZER;
         struct stat file_info;
         r_inode *ino = NULL;
@@ -38,9 +72,18 @@ r_open (const char *filename , unsigned int mode , struct r_file **file) {
         r_fd *new_fd = NULL;
         char f_name[100];
 
+	if (find_file_open(filename , mode) == 1) {
+		ret = file_already_open;	
+		goto out;	
+	}
         strcpy (f_name , exp_point);
         strcat (f_name , filename);
-        int fd = open (f_name , mode);
+        int fd;
+	if (mode == 1) {
+		fd = open (f_name , O_WRONLY);
+		lseek (fd , 0 , SEEK_END);	
+	} else
+		fd = open (f_name , O_RDONLY);
 
         if (fd != -1) {
                 /*To get the properties of a file */
@@ -60,6 +103,10 @@ r_open (const char *filename , unsigned int mode , struct r_file **file) {
                                 if (temp_node == NULL)
                                         goto out;
                                 temp_node->inode_number = inode;
+				if (mode == 1)
+					temp_node->write_flag = 1;
+				else
+					temp_node->write_flag = 0;
                                 temp_node->fd_list = NULL;
                                 temp_node->next = NULL;
                                 temp_node->prev = NULL;
@@ -75,6 +122,10 @@ r_open (const char *filename , unsigned int mode , struct r_file **file) {
                                 if (temp_node == NULL)
                                         goto out;
                                 temp_node->inode_number = inode;
+				if (mode == 1)
+					temp_node->write_flag = 1;
+				else
+					temp_node->write_flag = 0;
                                 temp_node->fd_list = NULL;
                                 temp_node->next = NULL;
                                 pthread_mutex_lock (&open_lock);
@@ -114,6 +165,10 @@ r_open (const char *filename , unsigned int mode , struct r_file **file) {
                                 goto out;
                         (*file)->inode_number = inode;
                         (*file)->fd = fd;
+			if (mode == 1)
+					(*file)->write_flag = 1;
+				else
+					(*file)->write_flag = 0;
                         ret = 0;
                 }
         } else {

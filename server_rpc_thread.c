@@ -125,6 +125,9 @@ void
                         case _r_read:
                                 st = read_handler (conn , recvBuff);
                                 break;
+			case _r_write:
+				st = write_handler (conn , recvBuff);
+				break;
                         case _r_close:
                                 st = close_handler (conn , recvBuff);
                                 break;

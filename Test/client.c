@@ -6,8 +6,9 @@ int
 main (int argc , char *argv[]) {
         r_file *file = NULL;
         r_dentry *list = NULL;
-        char fname[500] , buffer[1024] , cch;
+        char fname[500] , buffer[1024] , cch , *wr_buffer = NULL;
         int ch = 0 , st = 0;
+	unsigned int mode;
         ssize_t size;
 
         /*Check Input parameter */
@@ -23,14 +24,14 @@ main (int argc , char *argv[]) {
         if (st == 0) {
                 while (1) {
 menu:                  printf ("\n--- MENU ---\n1.Files\n");
-                        printf ("2.Open A File\n3.Read File\n");
-                        printf ("4.Close File\nEnter your choice:\t");
+                        printf ("2.Open A File\n3.Read File\n4.Write to File\n");
+                        printf ("5.Close File\nEnter your choice:\t");
                         scanf(" %c" , &cch);
                         int inv = 0;
 
                         while (getchar() != '\n')
                                 inv = 1;
-                        if ((cch - '0') <= 0 || (cch - '0') >= 5 || inv == 1) {
+                        if ((cch - '0') <= 0 || (cch - '0') > 5 || inv == 1) {
                                 printf ("\n--Invalid Choice--\n\n");
                                 goto menu;
                         } else {
@@ -49,7 +50,13 @@ menu:                  printf ("\n--- MENU ---\n1.Files\n");
                         case 2:
                                 printf ("Enter the File name:\t");
                                 scanf ("%s" , &fname);
-                                st = rOpen(fname , O_RDONLY , &file);
+				printf ("Enter the Mode:\n1.Read\t2.Write\nChoice:\t");
+                                scanf ("%d" , &ch);
+				if (ch==1)
+					mode = 0;
+				else
+					mode = 1;
+                                st = rOpen(fname , mode , &file);
                                 if (st == 0)
                                         printf ("File INODE: %lu - FD: %d\n" ,
                                         file->inode_number , file->fd);
@@ -60,6 +67,16 @@ menu:                  printf ("\n--- MENU ---\n1.Files\n");
                                 rRead (file , buffer , size);
                                 break;
                         case 4:
+				printf ("Enter the Write Size:\t");
+                                scanf("%d" , &size);
+				wr_buffer = (char *) malloc (sizeof(char) * size);
+				printf ("Enter the content to write:\t");
+				scanf ("%[^\t]" , wr_buffer);
+				buffer[strlen(wr_buffer)] = '\0';
+				size = strlen (wr_buffer);
+				rWrite (file , wr_buffer , size);
+				break;
+			case 5:
                                 st = rClose (&file);
                                 break;
                         default:

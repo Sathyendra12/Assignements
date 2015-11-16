@@ -1,11 +1,11 @@
-/* This function marshal the list request from the clinet send it to the server
- * and receives the response from the server and unmarshal it and then send it
- * to the client
- *
+/* This function marshal the list request from the clinet send it to the server and
+ * receives the response from the server and unmarshal it and then send it to
+ * the client
+ * 
  * inputs parameters:
- *                      struct r_dentry *list  :this will be the pointer to
+ *                      struct r_dentry *list  :this will be the pointer to 
  * the linked list sent from the server
- *
+ * 
  * output parameters:
  *                      int :Success(0)/Failure(-1) indicator
  * */
@@ -99,7 +99,8 @@ r_list (struct r_dentry *list) {
                 goto out;
         }
 out:
-        if (list == NULL) {
+        if (list == NULL)
+        {
                 root = NULL;
         }
         memset (sendBuff , 0 , sizeof(sendBuff));

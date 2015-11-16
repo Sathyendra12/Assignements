@@ -34,7 +34,9 @@ r_open (const char *filename, unsigned int mode, struct r_file **file) {
                 }
                 strcat (sendBuff , len);
                 strcat (sendBuff , filename);
+		memset (data , 0 , sizeof (data));
                 sprintf (data , "%d" , mode);
+		
                 strcat (sendBuff , data);
                 memcpy (sendBuff + strlen (sendBuff) , *file , p_size);
                 /*Sending the Buffer content to the server */

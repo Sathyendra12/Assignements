@@ -21,8 +21,12 @@ rOpen (const char *filename , unsigned int mode , struct r_file **file) {
                 ret = 0;
                 goto out;
         }
-        ret = r_open (filename , mode , file);
-
+	if(mode == 1 || mode == 0){
+        	ret = r_open (filename , mode , file);	
+	} else {
+		printf("ERROR: Invalid File open Mode\n");
+		goto out;
+	}
         if (ret == 0) {
                 printf ("File : %s is opened\n" , filename);
                 printf ("Operation Successful\n\n");
@@ -33,7 +37,9 @@ rOpen (const char *filename , unsigned int mode , struct r_file **file) {
         } else if (ret == file_not_found) {
                 printf ("ERROR: The reqested file : %s is not found.\n"
                         , filename);
-        } else {
+        } else if (ret == file_already_open) {
+		printf ("ERROR: File is in Use. Write Failed\n");
+	} else {
                 printf ("ERROR: Could not Open the file.\n");
         }
         printf ("Operation Failed\n\n");

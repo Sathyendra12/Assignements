@@ -1,5 +1,5 @@
-/* This function unmarshal the read request from the client and perform the 
- * requested task and marshal the response and send it to the server
+/* This function unmarshal the write request from the client and perform the 
+ * requested task and marshal the response and send it to the client
  * 
  * input parameters:
  *                      int conn                 :socket connection identifier
@@ -15,7 +15,7 @@
 #include "rudi_server.h"
 
 int
-read_handler (int conn , char *recvBuff) {
+write_handler (int conn , char *recvBuff) {
 
         char len[10] , data[100] , sendBuff[1024] , buffer[1024];
         int read_status = 0 , p_size = 0 , ind = 0 , ret = -1;
@@ -32,11 +32,13 @@ read_handler (int conn , char *recvBuff) {
         memcpy (data , &recvBuff[ind] , p_size);
         ind += p_size;
         size = atoi (data);
+	memcpy (buffer , &recvBuff[ind] , size);
+        ind += size;
 
         memcpy (file , &recvBuff[ind] , sizeof(r_file));
 
         /* request to read the files */
-        size = r_read1 (file , buffer , size);
+        size = r_write1 (file , buffer , size);
 
         if (size == -1 || size == -2) {
                 /*storing the error enums into the buffer*/
@@ -48,7 +50,7 @@ read_handler (int conn , char *recvBuff) {
                 memset (data , 0 , sizeof(data));
 
                 if (size == -1)
-                        sprintf (data , "%d" , read_failed);
+                        sprintf (data , "%d" , write_failed);
                 else
                         sprintf (data , "%d" , not_enough_content);
 
@@ -69,7 +71,6 @@ read_handler (int conn , char *recvBuff) {
                 strcat (sendBuff , len);
                 strcat (sendBuff , data);
 
-                strcat (sendBuff , buffer);
                 ret = 0;
                 goto out;
         }
