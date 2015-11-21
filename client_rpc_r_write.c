@@ -1,20 +1,20 @@
 /* This function marshal the write request from the clinet send it to the server
  * and receives the response from the server and unmarshal it and then send it
  * to the client
- * 
+ *
  * input parameters:
- *                      struct r_file *file         :this will be the file pointer
- * which points to the file to be written
- * 
- *                      char *buffer                :this character pointer points
- * to the file contents that are to be written from the client or the error enum 
- * that are read from the server
- * 
+ *                      struct r_file *file         :this will be the file
+ * pointer which points to the file to be written
+ *
+ *                      char *buffer                :this character pointer
+ * points to the file contents that are to be written from the client or the
+ * error enum that are read from the server
+ *
  *                      ssize_t size                :the size of the file
  * content to be written to the server
- * 
+ *
  * output parameters:
- *                      ssize_t         :Success(0)/Failure(-1) indicator
+ *			ssize_t         :Success(0)/Failure(-1) indicator
  * */
 
 #include "rudi_client.h"
@@ -43,7 +43,6 @@ r_write (r_file *file , char *buffer , ssize_t size) {
 		strcat (sendBuff , buffer);
 
                 memcpy (sendBuff + strlen (sendBuff) , file , sizeof (r_file));
-                
 
                 if (sendBuff == NULL) {
                         ret = -1;

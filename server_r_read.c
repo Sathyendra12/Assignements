@@ -4,13 +4,13 @@
  * input parameters:
  *                      struct r_file *file         :this will be the file
  * pointer which points to the file to be read
- * 
+ *
  *                      char *buffer                :this character pointer
  * points to the file contents that are read
- * 
+ *
  *                      ssize_t size                :the size of the file
  * content to be read
- * 
+ *
  * output parameters:
  *                      ssize_t                error/read size
  * */

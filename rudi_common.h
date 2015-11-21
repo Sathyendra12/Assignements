@@ -6,12 +6,14 @@
 #include <fcntl.h>
 
 /*Enumeration for Function Identification */
-enum fun_list {_r_list = 101 , _r_open = 102 , _r_read = 103 , _r_close = 104 , _r_write = 105};
+enum fun_list {_r_list = 101 , _r_open = 102 , _r_read = 103 , _r_close = 104,
+_r_write = 105};
 
 /*Enumeration for Error List */
 enum err_list {directory_empty = 11 , file_not_found = 12 ,
-file_not_open = 13 , not_enough_content = 14 , not_a_file = 15 , read_failed = 16 ,
-file_already_open = 17 , file_write_in_progress = 18 , write_failed = 19};
+file_not_open = 13 , not_enough_content = 14 , not_a_file = 15 ,
+read_failed = 16 , file_already_open = 17 , file_write_in_progress = 18 ,
+write_failed = 19};
 
 /*Export Point Directory content */
 struct r_dentry {

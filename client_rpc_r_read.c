@@ -1,18 +1,18 @@
 /* This function marshal the read request from the clinet send it to the server
  * and receives the response from the server and unmarshal it and then send it
  * to the client
- * 
+ *
  * input parameters:
- *                      struct r_file *file         :this will be the file pointer
- * which points to the file to be read
- * 
- *                      char *buffer                :this character pointer points
- * to the file contents that are read from the client or the error enum tha are
- * read from the server
- * 
+ *                      struct r_file *file         :this will be the
+ * file pointer which points to the file to be read
+ *
+ *                      char *buffer                :this character pointer
+ * points to the file contents that are read from the client or the error enum
+ * tha are read from the server
+ *
  *                      ssize_t size                :the size of the file
  * content to be read from the server
- * 
+ *
  * output parameters:
  *                      ssize_t         :Success(0)/Failure(-1) indicator
  * */

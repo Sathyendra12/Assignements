@@ -1,6 +1,6 @@
 /*This function is used to list all the files on the Export point and create a
  * linked list assign it to global pointer root_node
- * 
+ *
  * output parameters:
  *                      int :Success(0)/Failure(-1) indicator
  * */

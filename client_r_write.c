@@ -24,9 +24,10 @@ rWrite (struct r_file *file, char *o_buffer, ssize_t size) {
         int status = 0 , ret = -1 , siz = 0 , o_siz = 0 , flag = 0;
         unsigned long temp_size = 0 , bytes_read = 0 , temp_size1 = 0;
         unsigned long counter = 0;
-	int start1 = 0 ,start2, copy_ptr;
+	int start1 = 0 , start2 , copy_ptr;
 	char buffer[1024];
 
+	size = strlen (o_buffer);
 	if (file->write_flag == 0) {
 		printf ("ERROR: File is Open in Read mode\n");
 		goto out;
@@ -46,15 +47,15 @@ loop:
                                         size = temp_size;
                                         temp_size = 0;
                                 }
-                        }
-			for (start2 = 0, start1 = siz; start1 < size && start2 <= 1000; start1++ , start2++) {
+                        } else
+				size = temp_size;
+			memset (buffer , 0 , sizeof(buffer));
+			for (start2 = 0, start1 = siz; start1 < (siz+size) &&
+					start2 <= 1000; start1++ , start2++) {
 				buffer[start2] =  o_buffer[start1];
 			}
-			if (start2 == 1001)
-				buffer[1001]= '\0';
 			o_siz = siz;
                         siz = r_write (file , buffer , size);
-
                         if (siz == -1) {
                                 status = atoi(buffer);
                                 if (status == file_not_open) {
@@ -70,18 +71,18 @@ loop:
                                 ret = -1;
                                 goto out;
                         } else {
-				siz += o_siz;
                                 if (flag == 1) {
-                                        printf ("%s" , buffer);
                                         counter += siz;
-                                        if (counter == temp_size1) {
+                                        if (counter >= temp_size1) {
                                                 ret = 0;
                                                 goto message;
                                         } else {
                                                 goto loop;
                                         }
                                 } else {
-                                        printf ("Content Written to file:\n%s\n" , buffer);
+					printf ("Successfuly Written to the "
+						"file\nNo. of bytes Written: "
+						"%d\n" , siz);
                                         ret = 0;
                                         goto out;
                                 }
@@ -94,9 +95,8 @@ loop:
 message:
         if (flag == 1) {
                 if (counter == temp_size1)
-                        printf ("Total Contents written = %lu" , counter);
-                else
-                        printf ("Data only Contain  : %lu bytes\n" , counter);
+                        printf ("\n\nSuccessfuly Written to file\nNo. of bytes"
+						" Written: %d\n" , counter);
                 flag = 0;
         }
 

@@ -14,7 +14,7 @@ rClose (struct r_file **file1) {
         int ret = -1;
 
         if (file != NULL && file->inode_number != 0) {
-                printf ("Request to close file.\nINODE : %lu - FD : %d\n" ,
+                printf ("\nINODE : %lu - FD : %d\n" ,
                         file->inode_number , file->fd);
         } else {
                 printf ("Invalid Request\n\n");

@@ -16,6 +16,7 @@ main () {
         serv_addr.sin_addr.s_addr = htonl (INADDR_ANY);
         serv_addr.sin_port = htons (5000);
         bind (listenfd , (struct sockaddr *) &serv_addr , sizeof (serv_addr));
+	server_r_list();
         if (listen (listenfd , 10) == -1) {
                 printf ("ERROR: Failed to listen\n");
                 ret = -1;

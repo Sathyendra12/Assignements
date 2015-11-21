@@ -1,8 +1,8 @@
 /* This function marshal the linked list response and send it to the client
- * 
+ *
  * inputs parameters:
  *                      int conn        :socket connection identifier
- * 
+ *
  * output parameters:
  *                      int :Success(0)/Failure(-1) indicator
  * */
@@ -14,8 +14,8 @@ list_handler(int conn) {
 
         char data[100] , sendBuff[1024];
         int fun_status = 0, index = 0 , ret = -1;
-        r_dentry *ptr = NULL;
 
+	r_dentry *ptr = NULL;
         if (root_node == NULL) {
                fun_status = server_r_list();
         }

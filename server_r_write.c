@@ -4,13 +4,13 @@
  * input parameters:
  *                      struct r_file *file         :this will be the file
  * pointer which points to the file to be written
- * 
+ *
  *                      char *buffer                :this character pointer
  * points to the file contents that are written
- * 
+ *
  *                      ssize_t size                :the size of the file
  * content to be written
- * 
+ *
  * output parameters:
  *                      ssize_t                error/write size
  * */

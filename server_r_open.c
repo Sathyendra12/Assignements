@@ -23,28 +23,27 @@ find_file_open (const char *name , unsigned int mode) {
 	r_dentry *node = NULL;
 	r_inode *ino = NULL;
 	int ret = 1;
+
 	for (node = root_node ; node != NULL ; node = node->next) {
 		if (strcmp (node->name , name) == 0) {
 			ino = find_ino_exist (node->inode_number);
-			if (ino != NULL && ino->inode_number == node->inode_number)
-			{
+			if (ino != NULL && ino->inode_number ==
+						node->inode_number) {
 				if (ino->write_flag == 1) {
 					ret = 1;
 					goto out1;
 				} else {
-					if(mode == 1) {
+					if (mode == 1) {
 						ret = 1;
 						goto out1;
 					} else {
 						ret = 0;
 						goto out1;
 					}
-				}			
-			} 
-			else
+				}
+			} else
 				break;
 		}
-					
 	}
 	ret = 0;
 out1:
@@ -59,12 +58,12 @@ out1:
  *                              that is opend by the call.
  *
  * OUTPUT:
- *      int 		     :   Success/Failure indicator.
+ *	int			:   Success/Failure indicator.
  */
 int
 r_open (const char *filename , unsigned int mode , struct r_file **file) {
         int ret = -1;
-	int modeFlag = 0; 
+	int modeFlag = 0;
         pthread_mutex_t open_lock = PTHREAD_MUTEX_INITIALIZER;
         struct stat file_info;
         r_inode *ino = NULL;
@@ -73,15 +72,15 @@ r_open (const char *filename , unsigned int mode , struct r_file **file) {
         char f_name[100];
 
 	if (find_file_open(filename , mode) == 1) {
-		ret = file_already_open;	
-		goto out;	
+		ret = file_already_open;
+		goto out;
 	}
         strcpy (f_name , exp_point);
         strcat (f_name , filename);
         int fd;
 	if (mode == 1) {
 		fd = open (f_name , O_WRONLY);
-		lseek (fd , 0 , SEEK_END);	
+		lseek (fd , 0 , SEEK_END);
 	} else
 		fd = open (f_name , O_RDONLY);
 

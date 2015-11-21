@@ -9,7 +9,7 @@
  *
  * OUTPUT:
  *      int :         Success/Failure indicator
-.*/
+ */
 int
 init_rClient (char *host_name , unsigned int port) {
         strcpy (server_name , host_name);

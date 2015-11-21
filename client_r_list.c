@@ -1,10 +1,10 @@
 /*This function is used to print the list of files on the Clinet side
  * that are available on server Export Point
- * 
+ *
  * input parameters:
  *                  struct r_dentry *list    :this will be the pointer to
  * the linked list sent from the server
- * 
+ *
  * * output parameters:
  *                      int :Success(0)/Failure(-1) indicator
  * */
@@ -33,8 +33,10 @@ rList (struct r_dentry *list) {
                 printf("__________________________________________________\n");
                 printf ("\tSl.No \t FileName\n");
                 printf("==================================================\n");
-                for (ptr = root , index = 1 ; ptr != NULL ; ptr = ptr->next)
-                        printf ("\t%d)   \t%s\n", index++ , ptr->name);
+                for (ptr = root , index = 1; ptr != NULL;
+					ptr = ptr->next)
+                        printf ("\t%d)   \t%s(INODE: %d)\n", index++ ,
+					ptr->name , ptr->inode_number);
                 ret = 0;
                 goto out;
 

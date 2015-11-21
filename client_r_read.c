@@ -28,7 +28,7 @@ rRead (struct r_file *file, char *buffer, ssize_t size) {
         temp_size = size;
         if (temp_size > 0) {
                 if (file != NULL) {
-			
+
 			if (file->write_flag == 1) {
 				printf ("ERROR: File is Open in Write mode\n");
 				goto out;
@@ -54,7 +54,7 @@ loop:
 
                         if (siz == -1) {
                                 /*checking the enum to print the error*/
-                                /*if error occures the buffer will only 
+                                /*if error occures the buffer will only
                                  * contain error enum*/
                                 status = atoi(buffer);
                                 if (status == file_not_open) {
@@ -97,7 +97,8 @@ loop:
                                                 goto loop;
                                         }
                                 } else {
-                                        printf ("File Content :\n\n%s\n\n" , buffer);
+                                        printf ("File Content :\n\n%s\n\n"
+								, buffer);
                                         ret = 0;
                                         goto out;
                                 }

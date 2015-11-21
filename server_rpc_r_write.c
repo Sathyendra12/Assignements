@@ -1,13 +1,13 @@
-/* This function unmarshal the write request from the client and perform the 
+/* This function unmarshal the write request from the client and perform the
  * requested task and marshal the response and send it to the client
- * 
+ *
  * input parameters:
  *                      int conn                 :socket connection identifier
- * 
+ *
  *                      char *recvBuff                :this contains the client
  * request
- * 
- * 
+ *
+ *
  * output parameters:
  *                      int         :Success(0)/Failure(-1) indicator
  * */
